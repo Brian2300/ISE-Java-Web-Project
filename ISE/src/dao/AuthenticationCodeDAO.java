@@ -18,7 +18,7 @@ public class AuthenticationCodeDAO {
 		AuthenticationCode s = sd.retrieveaCode("1", "1");
 		System.out.println();
 		System.out.println(s.getQRCode());
-	    AuthenticationCode code = new AuthenticationCode("1", "2","2017-08-09 12:49:37","mmp6n7J");
+	    AuthenticationCode code = new AuthenticationCode("1", "2","2017-08-09 12:49:37","mmmmmmm");
 		sd.addNew(code);
 		
 	}
@@ -41,7 +41,7 @@ public class AuthenticationCodeDAO {
 		try {
 			conn = ConnectionManager.getConnection();
 
-			sql = "INSERT INTO " + TBLNAME + " (week, teaching_group, time, qrcode) VALUES (?,?,?,?)";
+			sql = "INSERT INTO " + TBLNAME + " (week, teaching_group, time, qrcode) VALUES (?,?,?,?)";//changed here
 			stmt = conn.prepareStatement(sql);
 
 			stmt.setString(1, newCode.getWeek());

@@ -45,7 +45,7 @@
 	   // String passcode = (String) request.getAttribute("passcode");
 	    String passcode = RandomString.generateRandomString(8);
 	    String time = RandomString.getCurrentTime();
-	    AuthenticationCode newCode = new AuthenticationCode("1", "2", time, passcode);
+	    AuthenticationCode newCode = new AuthenticationCode("10", "5", time, passcode);
 		AuthenticationCodeDAO sd = new AuthenticationCodeDAO();
 		sd.addNew(newCode);
 		String deeplink = "https://telegram.me/IS102_BOT?start=";
