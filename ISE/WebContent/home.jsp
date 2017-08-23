@@ -36,21 +36,4 @@
 
 </body>
 
-<%@include file="login_forum.jsp"%>
-
-<script>
-var username;
-var password;
-
-window.onload = function(){
-	var nfuUser = '${user}';
-	
-	if(!!nfuUser){
-		username = '${user.username}';
-		password = '${user.password}';
-	}
-}
-
-</script>
-
 </html>

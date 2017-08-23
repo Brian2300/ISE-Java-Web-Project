@@ -16,14 +16,14 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet implementation class Authenticate
  */
-@WebServlet("/Authenticate_forum")
-public class Authenticate_forum extends HttpServlet {
+@WebServlet("/Authenticate_register")
+public class Authenticate_register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public Authenticate_forum() {
+	public Authenticate_register() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -39,27 +39,7 @@ public class Authenticate_forum extends HttpServlet {
 		Boolean isStudent =emailID .matches(".*\\d");
 		String profRegMsg ="";
 		Student student = null;
-		
-		ForumUser fu = new ForumUser(email,username,password);
-		ForumUserDAO fuDao = new ForumUserDAO();
-		int emailResult = fuDao.retrieveForumUserWithEmail(email);
-		int usernameResult = fuDao.retrieveForumUserWithUsername(username);
-		
-		if (username.length()<3 || username.length()>20){
-			msg = "Please enter the username with the right format!";
-			RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
-			request.setAttribute("rmsg", msg);
-			rd.forward(request, response);
-			return;
-		}
-		
-		if (password.length()<6 || password.length()>100){
-			msg = "Please enter the password with the right format!";
-			RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
-			request.setAttribute("rmsg", msg);
-			rd.forward(request, response);
-			return;
-		}
+
 		
 		if(!email.contains("smu.edu.sg")){
 			msg = "Please register with SMU email";
@@ -69,13 +49,19 @@ public class Authenticate_forum extends HttpServlet {
 			return;
 		}
 		
+		ProfessorDAO pDAO = new ProfessorDAO();
+		StudentDAO sDAO = new StudentDAO();
+		AvatarDAO aDAO = new AvatarDAO();
+	
+		int avatarID = aDAO.lastAvatarID()+1;
+		
 	    if(!isStudent ){
-	    	   ProfessorDAO pDAO = new ProfessorDAO();
-	   		   profRegMsg = pDAO.registerProfessor(email,password); 
-	    }else{
-	    	   StudentDAO sDAO = new StudentDAO();
-	    	   student = sDAO.retrieveStudent(emailID, password);
+	   		profRegMsg = pDAO.registerProfessor(email,password,avatarID); 
+	   		aDAO.registerAvatar(username);
+	    }else{ 
+	    	student = sDAO.retrieveStudent(emailID, password);
 	    }
+	    
 		
 		if(!profRegMsg.equals("")){
 			msg = profRegMsg;
@@ -83,34 +69,17 @@ public class Authenticate_forum extends HttpServlet {
 			request.setAttribute("rmsg", msg);
 			rd.forward(request, response);
 			return;
-		}else if(isStudent&&student == null){
-			msg="Please register in the CAT bot";
+		}else if(isStudent&&student != null){
+			msg="You have registered in the CAT bot";
 			RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
 			request.setAttribute("rmsg", msg);
 			rd.forward(request, response);
 			return;
-		}
-		
-		if (emailResult == 0 && usernameResult == 0){
+		}else{
 			HttpSession session = request.getSession();
 			msg="You have successfully registered in our web portal.";
-			session.setAttribute("forumUser", fu);
 			session.setAttribute("successfulMsg", msg);
 			response.sendRedirect("login.jsp");
-			
-		/*	RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
-			msg="You have successfully registered in our web portal.";
-			request.setAttribute("forumUser", fu);
-			request.setAttribute("successfulMsg", msg);
-			rd.forward(request, response);*/
-			
-		
-		}else{
-			msg = "username/email already exists!";
-			RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
-			request.setAttribute("rmsg", msg);
-			rd.forward(request, response);
-			return;
 		}
 		
 	}

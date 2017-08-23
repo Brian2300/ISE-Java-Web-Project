@@ -7,7 +7,7 @@ httpResponse.setHeader("Cache-Control","no-cache, no-store, must-revalidate");
 response.addHeader("Cache-Control", "post-check=0, pre-check=0");
 httpResponse.setHeader("Pragma","no-cache"); 
 httpResponse.setDateHeader ("Expires", 0); 
-if ((session.getAttribute("forumUser") == null && session.getAttribute("user") == null )|| session == null)  {                               
+if (session.getAttribute("student") == null && session.getAttribute("professor") == null )  {                               
                 response.sendRedirect("login.jsp");
                 return;
  }
