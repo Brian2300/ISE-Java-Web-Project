@@ -15,6 +15,10 @@
 
 </head>
 <body>
+<%
+		String loginUrl = (String) session.getAttribute("loginUrl");
+		
+%>
 	<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarTogglerDemo01"
@@ -27,7 +31,7 @@
 			<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 				<li class="nav-item"><a class="nav-link" href="attendance.jsp">Attendance</a></li>
 				<li class="nav-item"><a class="nav-link" href="#">Post-class Summary</a></li>
-				<li class="nav-item"><a class="nav-link" href="consultation.jsp">Consultation</a></li>
+				<li class="nav-item"><a class="nav-link" href="<%=loginUrl%>">Consultation</a></li>
 				<li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
 				<li class="nav-item"><a class="nav-link" href="javascript:logInForum()" id="forum">Forum</a></li>
 				<li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>
