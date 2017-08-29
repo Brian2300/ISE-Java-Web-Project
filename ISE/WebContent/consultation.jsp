@@ -29,7 +29,7 @@
     		}, // Hide buttons/titles
     		defaultView: 'agendaWeek',
     		minTime: '08:00:00', // Start time for the calendar
-    		maxTime: '22:00:00', // End time for the calendar
+    		maxTime: '24:00:00', // End time for the calendar
     		displayEventTime: true, // Display event time
     		events: "Calendarjson"
         	// put your options and callbacks here

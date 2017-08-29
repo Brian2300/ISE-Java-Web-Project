@@ -5,6 +5,7 @@ public class FullCalendarEvent {
 	private String title;
 	private String start;
 	private String end;
+	private boolean allDay;
 	
 	public String getId(){
 		return id;
@@ -36,5 +37,14 @@ public class FullCalendarEvent {
 	
 	public void setEnd(String end){
 		this.end = end;
+	}
+	
+	public boolean getAllDay(){
+		return allDay;
+	}
+	
+	
+	public void setAllDay(boolean allDay){
+		this.allDay = allDay;
 	}
 }

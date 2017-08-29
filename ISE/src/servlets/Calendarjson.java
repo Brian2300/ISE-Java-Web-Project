@@ -2,6 +2,10 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -38,32 +42,38 @@ public class Calendarjson extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		List list = new ArrayList();
+		List<FullCalendarEvent> list = new ArrayList();
 		
 		HttpSession session = request.getSession();
 		Event[] arrEvents = (Event[]) session.getAttribute("events");
 		
-		System.out.println("This is Events: " + arrEvents);
-		FullCalendarEvent fcEvent = new FullCalendarEvent();
 		for(Event event: arrEvents){
+			FullCalendarEvent fcEvent = new FullCalendarEvent();
 			fcEvent.setId(event.getId());
 			fcEvent.setTitle(event.getSubject());
-			fcEvent.setStart(event.getStart().toString());
-			fcEvent.setEnd(event.getEnd().toString());
+			
+			Date dEnd = event.getEnd().getDateTime();
+			Date dStart = event.getStart().getDateTime();
+			
+			long difference = dEnd.getTime() - dStart.getTime();
+			//if milliseconds == 86400000 means equals 1 day so is full day
+			if(difference == 86400000){
+				fcEvent.setAllDay(true);
+			}
+			
+			//Conversion to ISO 8601 String from events date
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+			String start = df.format(event.getStart().getDateTime());
+			String end = df.format(event.getEnd().getDateTime());
+			fcEvent.setStart(start);
+			fcEvent.setEnd(end);
 			list.add(fcEvent);	
 		}
-		
-		FullCalendarEvent c = new FullCalendarEvent();
-		c.setId("1");
-		c.setStart("2017-08-28");
-		c.setEnd("2017-08-29");
-		c.setTitle("Task in Progress");
-		list.add(c);	
 		 
-		 response.setContentType("application/json");
-		 response.setCharacterEncoding("UTF-8");
-		 PrintWriter out = response.getWriter();
-		 out.write(new Gson().toJson(list));
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+		out.write(new Gson().toJson(list));
 	}
 
 	/**
