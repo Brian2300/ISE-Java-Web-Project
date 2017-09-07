@@ -40,20 +40,14 @@ public class Authenticate extends HttpServlet {
 		ProfessorDAO professorDAO = new ProfessorDAO();
 		Professor professor = professorDAO.retrieveProfessor(emailID, password);
 		
-		ForumUserDAO fuDao = new ForumUserDAO();
-		String username = fuDao.retrieveUsernameWithEmailID(emailID);
-		ForumUser fu = new ForumUser(username,password);
-
-
-		
 		if (student != null) {
 			HttpSession session = request.getSession();
-			session.setAttribute("user", fu);
+			session.setAttribute("student", student);
 			response.sendRedirect("homeStudent.jsp");
 
 		} else if (professor != null){
 			HttpSession session = request.getSession();
-			session.setAttribute("user", fu);
+			session.setAttribute("professor", professor);
 			response.sendRedirect("home.jsp");
 		
 		} else {

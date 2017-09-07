@@ -23,9 +23,9 @@
 				<li class="nav-item"><a class="nav-link" href="attendance.jsp">Attendance</a></li>
 				<li class="nav-item"><a class="nav-link" href="#">Post-class Summary</a></li>
 				<li class="nav-item"><a class="nav-link" href="consultation.jsp">Consultation</a></li>
-				<li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
-				<li class="nav-item"><a class="nav-link" href="javascript:logInForum()" id="forum">Forum</a></li>
-				<li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>
+				<li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>				
+				<li class="nav-item"><a class="nav-link" href="forumHome.jsp" >Forum</a></li>
+			    <li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -35,22 +35,5 @@
 <script src="style/js/bootstrap.min.js"></script>
 
 </body>
-
-<%@include file="login_forum.jsp"%>
-
-<script>
-var username;
-var password;
-
-window.onload = function(){
-	var nfuUser = '${user}';
-	
-	if(!!nfuUser){
-		username = '${user.username}';
-		password = '${user.password}';
-	}
-}
-
-</script>
 
 </html>

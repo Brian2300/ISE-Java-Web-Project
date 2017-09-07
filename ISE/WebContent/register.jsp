@@ -47,7 +47,7 @@ function checkPwd(form){
 			<h2>Register with SMU Email Account</h2>
 			<hr>
 		</header>
-		<form class="form-horizontal" role="form" method="POST" action="Authenticate_forum" onsubmit="return checkPwd(this);">
+		<form class="form-horizontal" role="form" method="POST" action="Authenticate_register" onsubmit="return checkPwd(this);">
 			<div class="row">
 				<div class="col-md-4"></div>
 				<div class="form-group">
@@ -58,7 +58,7 @@ function checkPwd(form){
 							<i class="fa fa-user"></i>
 						</div>
 						<input type="text" name="username" class="form-control" id="username"
-							placeholder="Username between 3-20 characters" required autofocus size="34">
+							placeholder="Insert your username" required autofocus size="34">
 					</div>
 				</div>
 			</div>
@@ -90,7 +90,7 @@ function checkPwd(form){
 							<i class="fa fa-key"></i>
 						</div>
 						<input type="password" name="password" class="form-control"
-							id="password" placeholder="password between 6-100 characters" required
+							id="password" placeholder="Insert your password" required
 							autofocus size="34">
 					</div>
 				</div>
@@ -117,7 +117,7 @@ function checkPwd(form){
 			<div class="row">
 				<div class="col-md-7"></div>
 				<button type="submit" class="btn btn-primary">
-					Sign Up
+					Register
 				</button>
 			</div>
 		</form>
