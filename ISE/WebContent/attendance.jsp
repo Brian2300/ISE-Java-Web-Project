@@ -5,6 +5,7 @@
 <%@page import="java.util.Set"%>
 <%@page import="java.util.TreeMap"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="dao.AttendanceDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <html>
@@ -16,17 +17,16 @@
     </h1>
     <body>
     <form action = 'AttendanceController'>
-    Group_id:<input type='text' name='group_id'/><br/>
-    Week:<input type='text' name='week'/><br/>
-    <select name="Group">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    </select>
-    <select name="weekno">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
+    Group_id:
+    <select name="group_id">
+    <%
+    String[][] distGroups = AttendanceDAO.retrieveDistinctGroups();
+    for(String[]group: distGroups){
+    	out.print("<option value="+group[0]+">"+group[0]+"</option>");
+    }
+    
+    %>
+
     </select>
     
     <input type='submit' value='Retrieve Attendance'/>
@@ -43,12 +43,22 @@
 		<table border="2">
 		<tr>
         <th>Student ID</th>
-        <th>Attendance</th>
+        <%
+	    String[][] distWeeks = AttendanceDAO.retrieveDistinctWeeks();
+	    for(String[]week: distWeeks){
+	    	out.print("<th>week "+week[0]+"<th>");
+	    }
+	    %>
    		</tr>
    		<% 
-		for(String[] s:attendanceList){
-			out.print("<tr><td>"+s[0]+"</td>");
-			out.print("<td>"+s[1]+"</td>");
+
+		for(String[] stu_attendance:attendanceList){
+			
+			out.print("<tr>");
+			for(String attendance: stu_attendance){
+				out.print("<td>"+attendance+"<td>");
+			}
+			out.print("<tr>");
 		}
 		}
     	%>
