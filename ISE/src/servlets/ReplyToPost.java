@@ -16,46 +16,61 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet implementation class Authenticate
  */
-@WebServlet("/Authenticate")
-public class Authenticate extends HttpServlet {
+@WebServlet("/ReplyToPost")
+public class ReplyToPost extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public Authenticate() {
+	public ReplyToPost() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String errorMsg = "";
-		String emailID = request.getParameter("emailID");
-		String password = request.getParameter("password");
-		
-		StudentDAO studentDAO = new StudentDAO();
-		Student student = studentDAO.retrieveStudent(emailID, password);
-		
-		ProfessorDAO professorDAO = new ProfessorDAO();
-		Professor professor = professorDAO.retrieveProfessor(emailID, password);
-		
-		if (student != null) {
-			HttpSession session = request.getSession();
-			session.setAttribute("student", student);
-			response.sendRedirect("home.jsp"); // may need to be changed back to HomeStudent.jsp
-
-		} else if (professor != null){
-			HttpSession session = request.getSession();
-			session.setAttribute("professor", professor);
-			response.sendRedirect("home.jsp");
-		
-		} else {
-			errorMsg = "Invalid username/password";
-			RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
-			request.setAttribute("error", errorMsg);
-			rd.forward(request, response);
+		HttpSession session = request.getSession();
+		Student student = (Student)session.getAttribute("student");
+		Professor professor = (Professor)session.getAttribute("professor");
+		int avatar_id=0;
+		if(student != null){
+			avatar_id = student.getAvatar_id();
+			System.out.println(avatar_id);
 		}
+		
+		if(professor != null){
+			avatar_id = professor.getAvatar_id();
+			System.out.println(avatar_id);
+		}
+		
+		String tempPostID = (String)request.getParameter("postID");
+		int post_id = Integer.parseInt(tempPostID);
+		String tempPostTitle = request.getParameter("postTitle");
+		String tempPostContent = request.getParameter("postContent");
+		
+        
+		String errorMsg = "";
+		PostDAO postDAO = new PostDAO();
+		
+		//System.out.println(post_id +" "+ tempPostTitle+" "+tempPostContent);
+		
+			
+		if(tempPostContent.isEmpty()||tempPostContent == null){
+			errorMsg = "Your reply content cannot be empty!";
+			RequestDispatcher rd = request.getRequestDispatcher("replyToPost.jsp?post_id="+post_id);
+			request.setAttribute("replyToPost", errorMsg);
+			rd.forward(request, response);
+			return;
+		}else{
+			postDAO.replyToPost(avatar_id, post_id, tempPostTitle, tempPostContent);
+			RequestDispatcher rd = request.getRequestDispatcher("viewPost.jsp?post_id="+post_id);
+			rd.forward(request, response);
+			return;
+		}
+
+		
+
 	}
 
 	/**

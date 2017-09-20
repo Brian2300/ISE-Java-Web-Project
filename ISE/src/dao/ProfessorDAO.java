@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,14 +14,19 @@ import entity.*;
 public class ProfessorDAO {
 	//for debugging purpose
 		
-/*		public static void main(String[] args){
+		public static void main(String[] args){
 			System.out.println("ssss");
 			ProfessorDAO pd = new ProfessorDAO();
-			pd.registerProfessor("tdai@smu.edu.sg","65438721");
+			pd.deleteProfessorSections(1);
+			/*ArrayList<String> sections = new ArrayList<>();
+			sections.add("G3");
+			sections.add("G2");
+			String msg = pd.registerProfessorSections(1,sections);
+			System.out.print(msg);*/
 	
-		}*/
+		}
 		
-		    private static final String TBLNAME = "professor";
+		private static final String TBLNAME = "professor";
 		
 	    private void handleSQLException(SQLException ex, String sql, String... parameters) {
 	        String msg = "Unable to access data; SQL=" + sql + "\n";
@@ -102,6 +108,72 @@ public class ProfessorDAO {
 	        }
 	    }
 	    
+	    public boolean CheckSectionExist(String section) {
+	        Connection conn = null;
+	        PreparedStatement stmt = null;
+	        String sql = "";
+	        ResultSet rs = null;
+	        Integer retrievedAvatar = null;
+	        
+	        try {
+	            conn = ConnectionManager.getConnection();
+
+	            sql = "select avatar_id from professor_section where group_id = ? ";
+	            stmt = conn.prepareStatement(sql);
+	            stmt.setString(1, section);
+
+	            rs = stmt.executeQuery();
+
+	            while (rs.next()) {
+	                retrievedAvatar = rs.getInt(1);
+	        
+	            }
+	        
+	        } catch (SQLException ex) {
+	            handleSQLException(ex, sql, "retrievedAvatar={" + retrievedAvatar + "}");
+	        } finally {
+	            ConnectionManager.close(conn, stmt, rs);
+	        }
+	       
+	        if(retrievedAvatar !=null){
+	        	return true;
+	        }else{
+	        	return false;
+	        }
+	    }
+	    
+	    public String registerProfessorSections(int avatar_id,String[] sections){
+	    	String msg = "";
+	    	Connection conn = null;
+		    PreparedStatement stmt = null;
+		    String sql = "";
+		    
+		    try {
+		    	conn = ConnectionManager.getConnection();
+		    	
+		    	for(String section:sections){
+				    if(CheckSectionExist(section)){
+				    	msg = "Please check the sections you teach";
+				    	return msg;
+				    }
+				    
+				    sql = "insert into professor_section (avatar_id,group_id) values (?,?)";
+			        stmt = conn.prepareStatement(sql);
+			        stmt.setInt(1, avatar_id);
+			        stmt.setString(2,section); 
+			        stmt.executeUpdate();
+
+			    }
+		    	
+	        } catch (SQLException ex) {
+	        	 
+		         //handleSQLException(ex, sql, "msg={" + msg + "}");
+		    } finally {
+		            ConnectionManager.close(conn, stmt);
+		    }
+	    	return msg;
+	    }
+	    
 	    public String registerProfessor(String email,String password,int avatar_id){
 	    	String msg = "";
 	    	Connection conn = null;
@@ -133,6 +205,58 @@ public class ProfessorDAO {
 		    }
 	    	return msg;
 	    }
+	    
+	    public  ArrayList<String> retrieveProfessorSections(int avatar_id){
+	    	  	Connection conn = null;
+		        PreparedStatement stmt = null;
+		        String sql = "";
+		        ArrayList<String> sections = new ArrayList<>();
+		        ResultSet rs = null;
 
+		        try {
+		            conn = ConnectionManager.getConnection();
+
+		            sql = "select group_id from professor_section where avatar_id = ? order by CONVERT(MID(group_id,2),unsigned)";
+		            stmt = conn.prepareStatement(sql);
+		            stmt.setInt(1, avatar_id);
+
+		            rs = stmt.executeQuery();
+
+		            while (rs.next()) {
+		                String group_id = rs.getString(1);
+		                sections.add(group_id);
+		            }
+
+		        } catch (SQLException ex) {
+		            handleSQLException(ex, sql, "sections={" + sections + "}");
+		        } finally {
+		            ConnectionManager.close(conn, stmt, rs);
+		        }
+		        return sections;
+	    }
+	    
+	    public  void deleteProfessorSections(int avatar_id){
+    	  	Connection conn = null;
+	        PreparedStatement stmt = null;
+	        String sql = "";
+	        ResultSet rs = null;
+
+	        try {
+	            conn = ConnectionManager.getConnection();
+
+	            sql = "delete from professor_section where avatar_id = ?";
+	            stmt = conn.prepareStatement(sql);
+	            stmt.setInt(1, avatar_id);
+
+	            stmt.executeUpdate();
+
+	 
+	        } catch (SQLException ex) {
+	           ex.printStackTrace();
+	        } finally {
+	            ConnectionManager.close(conn, stmt, rs);
+	        }
+	 
+	    }
 
 }

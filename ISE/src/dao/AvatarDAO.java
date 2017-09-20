@@ -10,6 +10,11 @@ import java.util.logging.Logger;
 public class AvatarDAO {
 	 private static final String TBLNAME = "avatar";
 	 
+/*	 public static void main(String[] args){
+		 AvatarDAO ad= new AvatarDAO();
+		 System.out.println(ad.getAvatarName(2));
+	 }*/
+	 
 	 private void handleSQLException(SQLException ex, String sql, String... parameters) {
 	        String msg = "Unable to access data; SQL=" + sql + "\n";
 	        for (String parameter : parameters) {
@@ -70,4 +75,34 @@ public class AvatarDAO {
          }
          return returnAvatarID;
    }
+	 
+	 
+	 public String getAvatarName(int avatar_id){
+		 
+		 Connection conn = null;
+         PreparedStatement stmt = null;
+         String sql = "";
+         String returnAvatarName = "";
+         ResultSet rs = null;
+
+         try {
+             conn = ConnectionManager.getConnection();
+
+             sql = "select avatar_name FROM " + TBLNAME +" WHERE avatar_id = ?";
+             stmt = conn.prepareStatement(sql);    
+             stmt.setInt(1, avatar_id);
+             rs = stmt.executeQuery();
+
+             while (rs.next()) {              
+            	 returnAvatarName = rs.getString(1); 
+             }
+
+         } catch (SQLException ex) {
+             handleSQLException(ex, sql, "avatar_name={" + returnAvatarName + "}");
+         } finally {
+             ConnectionManager.close(conn, stmt, rs);
+         }
+         return returnAvatarName;
+		 
+	 }
 }
