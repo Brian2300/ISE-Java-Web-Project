@@ -51,7 +51,7 @@ public class StudentDAO {
         try {
             conn = ConnectionManager.getConnection();
 
-            sql = "select smu_email_id, smu_email, tele_username, group_id, password, chat_id, veri_code, temp_smu_email_address,avatar_id from " + TBLNAME + " where smu_email_id = ? and password = SHA1(?)";
+            sql = "select smu_email_id, smu_email, tele_username, group_id, password, chat_id, veri_code, temp_smu_email_address,avatar_id,qa_coins from " + TBLNAME + " where smu_email_id = ? and password = SHA1(?)";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, emailID);
             stmt.setString(2, password);
@@ -68,9 +68,10 @@ public class StudentDAO {
     			String veri_code = rs.getString(7); 
     			String temp_smu_email_address = rs.getString(8);
     			int avatar_id = rs.getInt(9);
+    			int qa_coins = rs.getInt(10);
 
               //  returnStudent = new Student(smu_email_id, tele_id, group_id,correctPassword);
-                returnStudent = new Student(smu_email_id, smu_email, tele_username, group_id, correctPassword,	chat_id, veri_code, temp_smu_email_address,avatar_id);
+                returnStudent = new Student(smu_email_id, smu_email, tele_username, group_id, correctPassword,	chat_id, veri_code, temp_smu_email_address,avatar_id,qa_coins);
             }
             //return resultUser;
 
@@ -92,7 +93,7 @@ public class StudentDAO {
         try {
             conn = ConnectionManager.getConnection();
 
-            sql = "select smu_email_id, smu_email, tele_username, group_id, password, chat_id, veri_code, temp_smu_email_address,avatar_id from " + TBLNAME + " where group_id = ?";
+            sql = "select smu_email_id, smu_email, tele_username, group_id, password, chat_id, veri_code, temp_smu_email_address,avatar_id,qa_coins from " + TBLNAME + " where group_id = ?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, group_id);
 
@@ -107,9 +108,10 @@ public class StudentDAO {
     			String veri_code = rs.getString(7); 
     			String temp_smu_email_address = rs.getString(8);
     			int avatar_id = rs.getInt(9);
+    			int qa_coins = rs.getInt(10);
 
               //  returnStudent = new Student(smu_email_id, tele_id, group_id,correctPassword);
-                students.add(new Student(smu_email_id, smu_email, tele_username, group_id, correctPassword,	chat_id, veri_code, temp_smu_email_address,avatar_id));
+                students.add(new Student(smu_email_id, smu_email, tele_username, group_id, correctPassword,	chat_id, veri_code, temp_smu_email_address,avatar_id,qa_coins));
             }
             //return resultUser;
 
@@ -120,6 +122,35 @@ public class StudentDAO {
         }
         return students;
     }
+
+    public static boolean updateQa_coins(Student student) {
+        if (student == null) {
+            return false;
+        }
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        String sql = "";
+        //get smu_email_id
+        String smu_email_id = student.getSmu_email_id();
+        //get qa_coins
+        int qa_coins = student.getQa_coins();     
+        ResultSet rs = null;
+        try {
+            conn = ConnectionManager.getConnection();
+            sql = "update student set qa_coins = ? where smu_email_id=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, Integer.toString(qa_coins));
+            stmt.setString(2, smu_email_id);
+            rs = stmt.executeQuery();
+        } catch (SQLException ex) {
+        	ex.printStackTrace();
+        } finally {
+            ConnectionManager.close(conn, stmt, rs);
+        }
+        return true;
+
+    }
+
     
     public HashMap<String,String> retrieveStudentNotRegistered(String group_id) {
         Connection conn = null;
