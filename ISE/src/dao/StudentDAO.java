@@ -134,18 +134,19 @@ public class StudentDAO {
         String smu_email_id = student.getSmu_email_id();
         //get qa_coins
         int qa_coins = student.getQa_coins();     
-        ResultSet rs = null;
+
         try {
             conn = ConnectionManager.getConnection();
             sql = "update student set qa_coins = ? where smu_email_id=?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, Integer.toString(qa_coins));
             stmt.setString(2, smu_email_id);
-            rs = stmt.executeQuery();
+            System.out.println("going to update "+stmt );
+            int numRecordsUpdated = stmt.executeUpdate();
         } catch (SQLException ex) {
         	ex.printStackTrace();
         } finally {
-            ConnectionManager.close(conn, stmt, rs);
+            ConnectionManager.close(conn, stmt);
         }
         return true;
 

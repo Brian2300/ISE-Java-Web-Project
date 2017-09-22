@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/ReplyToPost")
 public class ReplyToPost extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	private static final int reply_qa_coins = 5;
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -63,6 +63,10 @@ public class ReplyToPost extends HttpServlet {
 			rd.forward(request, response);
 			return;
 		}else{
+			if(student != null){
+				student.addQa_coins(reply_qa_coins);
+				StudentDAO.updateQa_coins(student);
+			}
 			postDAO.replyToPost(avatar_id, post_id, tempPostTitle, tempPostContent);
 			RequestDispatcher rd = request.getRequestDispatcher("viewPost.jsp?post_id="+post_id);
 			rd.forward(request, response);

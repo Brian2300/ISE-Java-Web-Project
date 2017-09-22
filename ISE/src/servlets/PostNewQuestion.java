@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import dao.PostDAO;
+import dao.StudentDAO;
 import dao.TagDAO;
 import entity.Professor;
 import entity.Student;
@@ -21,7 +22,8 @@ import entity.Student;
 @WebServlet("/PostNewQuestion")
 public class PostNewQuestion extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+    private static final int post_qa_coins = 10;
+    
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -84,6 +86,10 @@ public class PostNewQuestion extends HttpServlet {
 			rd.forward(request, response);
 			return;
 		}else{
+			if(student != null){
+				student.addQa_coins(post_qa_coins);
+				StudentDAO.updateQa_coins(student);
+			}
 			postDAO.addNewPost(avatar_id, post_title, post_content);
 			tagDAO.addTag(postDAO.lastPostIDofAvatar(avatar_id), post_tag);
 			RequestDispatcher rd = request.getRequestDispatcher("forumHome.jsp");

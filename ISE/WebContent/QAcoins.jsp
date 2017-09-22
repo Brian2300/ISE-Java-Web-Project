@@ -11,6 +11,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<%@ include file="navigationBar.jsp"%>
 <h1>My QA coins </h1>
 <%
 			Student student = (Student) session.getAttribute("student");
