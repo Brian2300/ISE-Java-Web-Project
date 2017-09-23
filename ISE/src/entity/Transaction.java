@@ -28,6 +28,7 @@ public Transaction(Student from_stu, Student to_stu, double amount) {
 }
 
 public Transaction(Post post, Student from_stu, double amount,String type) {
+	this.post = post;
 	this.from_stu = from_stu;
 	//this.type = "toCentralPool";
 	this.type = type;

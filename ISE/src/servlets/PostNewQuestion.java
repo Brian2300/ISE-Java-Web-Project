@@ -55,6 +55,8 @@ public class PostNewQuestion extends HttpServlet {
 		
 		//int avatar_id = 1;
 		String post_title =  request.getParameter("postTitle");
+		// check error here
+		double reward_qa_coins =Double.parseDouble(request.getParameter("reward_qa_coins"));
 		String post_content =  request.getParameter("postContent");
 		String[] post_tag =  request.getParameterValues("tag");
 		
@@ -94,9 +96,9 @@ public class PostNewQuestion extends HttpServlet {
 			tagDAO.addTag(postDAO.lastPostIDofAvatar(avatar_id), post_tag);
 			if(student != null){
 				// step 1 deposit 5 QAcoins to the central pool
-				student.addQa_coins(-post_qa_coins);
+				student.addQa_coins(-reward_qa_coins);
 				Post post = postDAO.retrievePostbyID(postDAO.lastPostIDofAvatar(avatar_id));
-				Transaction tx = new Transaction(post, student, post_qa_coins, "toCentralPool");
+				Transaction tx = new Transaction(post, student, reward_qa_coins, "toCentralPool");
 				StudentDAO.updateQa_coins(student);
 				TransactionDAO.insertTransaction(tx);
 				//TransactionController.depositQa_coins(student, post_qa_coins);

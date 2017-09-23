@@ -43,12 +43,11 @@ public class TransactionController extends HttpServlet {
 	}
 	
 	public static boolean checkSufficientBalance(Student student, double amount) {
-		
-		return false;
+		return (student.getQa_coins()>=amount);
 	}
 	
 	public static void depositQa_coins(Student student, double amount) {
-		Transaction tx = new Transaction(post, student, amount, "toCentralPool")
+		//Transaction tx = new Transaction(post, student, amount, "toCentralPool");
 		
 	}
 	

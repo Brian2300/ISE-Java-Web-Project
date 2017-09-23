@@ -49,12 +49,24 @@
 			<br>
 			<div class="container">
 				<form name="replyForm" method="post" action="PostNewQuestion">
+					
+					
 					<div class="form-group row">
 						<label for="inputEmail3" class="col-sm-2 col-form-label"><strong>Post
 								Title</strong></label>
 						<div class="col-sm-9">
 							<input type="text" name="postTitle" class="form-control"
 								id="inputEmail3" placeholder="Enter your post title" />
+
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<label for="inputEmail3" class="col-sm-2 col-form-label"><strong>Reward
+						QA Coins</strong></label>
+						<div class="col-sm-9">
+							<input type="number" name="reward_qa_coins" class="form-control"
+								id="inputEmail3" placeholder="Enter amount of QA coins" />
 
 						</div>
 					</div>

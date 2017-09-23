@@ -29,6 +29,7 @@ public class TransactionDAO {
         String sql = "";
         
         String from_stu_string = tx.getFrom_stu().getSmu_email_id();
+        String post_id_string = Integer.toString(tx.getPost().getPost_id());
         String tx_amount_string = Double.toString(tx.getAmount());
         String tx_time_string = tx.getTimestamp();
         String type_string = tx.getType();
@@ -37,13 +38,14 @@ public class TransactionDAO {
         int numRecordsUpdated =0;
         try {
             conn = ConnectionManager.getConnection();
-            sql = "INSERT INTO `transaction`(`from_stu`, `to_stu`, `tx_amount`, `tx_time`, `type`) VALUES (?,?,?,?,?)";
+            sql = "INSERT INTO `transaction`(`from_stu`, `post_id`, `to_stu`, `tx_amount`, `tx_time`, `type`) VALUES (?,?,?,?,?,?)";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, from_stu_string );
-            stmt.setString(2, "" );
-            stmt.setString(3, tx_amount_string);
-            stmt.setString(4, tx_time_string);
-            stmt.setString(5, type_string);
+            stmt.setString(2, post_id_string );
+            stmt.setString(3, "" );
+            stmt.setString(4, tx_amount_string);
+            stmt.setString(5, tx_time_string);
+            stmt.setString(6, type_string);
             System.out.println("going to update TX "+stmt );
             numRecordsUpdated = stmt.executeUpdate();
         } catch (SQLException ex) {
