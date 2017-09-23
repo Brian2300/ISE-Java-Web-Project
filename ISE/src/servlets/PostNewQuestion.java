@@ -13,8 +13,11 @@ import javax.servlet.http.HttpSession;
 import dao.PostDAO;
 import dao.StudentDAO;
 import dao.TagDAO;
+import dao.TransactionDAO;
+import entity.Post;
 import entity.Professor;
 import entity.Student;
+import entity.Transaction;
 
 /**
  * Servlet implementation class PostNewQuestion
@@ -22,7 +25,7 @@ import entity.Student;
 @WebServlet("/PostNewQuestion")
 public class PostNewQuestion extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private static final int post_qa_coins = 10;
+    private static final double post_qa_coins = 5;
     
     /**
      * @see HttpServlet#HttpServlet()
@@ -86,12 +89,21 @@ public class PostNewQuestion extends HttpServlet {
 			rd.forward(request, response);
 			return;
 		}else{
-			if(student != null){
-				student.addQa_coins(post_qa_coins);
-				StudentDAO.updateQa_coins(student);
-			}
+			
 			postDAO.addNewPost(avatar_id, post_title, post_content);
 			tagDAO.addTag(postDAO.lastPostIDofAvatar(avatar_id), post_tag);
+			if(student != null){
+				// step 1 deposit 5 QAcoins to the central pool
+				student.addQa_coins(-post_qa_coins);
+				Post post = postDAO.retrievePostbyID(postDAO.lastPostIDofAvatar(avatar_id));
+				Transaction tx = new Transaction(post, student, post_qa_coins, "toCentralPool");
+				StudentDAO.updateQa_coins(student);
+				TransactionDAO.insertTransaction(tx);
+				//TransactionController.depositQa_coins(student, post_qa_coins);
+				
+			}
+			
+			
 			RequestDispatcher rd = request.getRequestDispatcher("forumHome.jsp");
 			rd.forward(request, response);
 			return;

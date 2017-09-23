@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class QAcoinsDAO {
-	private static final String TBLNAME = "weekly_class_participation";
+import entity.Transaction;
+
+public class TransactionDAO {
+	private static final String TBLNAME = "transaction";
 	
     private void handleSQLException(SQLException ex, String sql, String... parameters) {
         String msg = "Unable to access data; SQL=" + sql + "\n";
@@ -21,42 +23,40 @@ public class QAcoinsDAO {
         throw new RuntimeException(msg, ex);
     }
     
-    public HashMap<String,String> retrieveWeeklyClassPart(String group_id,int week) {
+    public static boolean insertTransaction(Transaction tx) {
         Connection conn = null;
         PreparedStatement stmt = null;
         String sql = "";
-        HashMap<String,String> weeklyRecord = new  HashMap<String,String>();
-        ResultSet rs = null;
         
-        if(group_id.isEmpty()||week==0){
-        	return weeklyRecord;
-        }
-        
+        String from_stu_string = tx.getFrom_stu().getSmu_email_id();
+        String tx_amount_string = Double.toString(tx.getAmount());
+        String tx_time_string = tx.getTimestamp();
+        String type_string = tx.getType();
+
+    
+        int numRecordsUpdated =0;
         try {
             conn = ConnectionManager.getConnection();
-            
-            sql = "select smu_email_id,IF(temp.student_id IS NULL,'absent','present') as status from student_list left join ( select * from "
-            		+TBLNAME+" where week = ? ) as temp "
-            		+ "on smu_email_id = temp.student_id where group_id = ? ";
-            
+            sql = "INSERT INTO `transaction`(`from_stu`, `to_stu`, `tx_amount`, `tx_time`, `type`) VALUES (?,?,?,?,?)";
             stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, week);
-            stmt.setString(2,group_id);
-            rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                String smu_email_id = rs.getString(1);
-                String status = rs.getString(2);
-                weeklyRecord.put(smu_email_id,status);
-            }
-            //return resultUser;
-
+            stmt.setString(1, from_stu_string );
+            stmt.setString(2, "" );
+            stmt.setString(3, tx_amount_string);
+            stmt.setString(4, tx_time_string);
+            stmt.setString(5, type_string);
+            System.out.println("going to update TX "+stmt );
+            numRecordsUpdated = stmt.executeUpdate();
         } catch (SQLException ex) {
-            handleSQLException(ex, sql, "weeklyRecord={" + weeklyRecord + "}");
+        	ex.printStackTrace();
         } finally {
-            ConnectionManager.close(conn, stmt, rs);
+            ConnectionManager.close(conn, stmt);
         }
-        return weeklyRecord;
+        if(numRecordsUpdated == 1) {
+        	return true;
+        }else {
+        	return false;
+        }
+        
     }
     
     public ArrayList<Integer> retrieveIndiClassPart(String smu_email_id) {

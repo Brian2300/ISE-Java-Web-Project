@@ -403,7 +403,7 @@ public class PostDAO {
 		        stmt.setInt(16,0); //previous_version
 		        stmt.setInt(17,0); // num_of_upvotes
 		        stmt.setInt(18,0); //num_of_upvotes
-		        
+		        System.out.println(stmt);
 		        stmt.executeUpdate();
 
 	        } catch (SQLException ex) {

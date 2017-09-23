@@ -14,7 +14,7 @@ public class Student {
     private String veri_code;
     private String temp_smu_email_address;
     private int avatar_id;
-    private int qa_coins;
+    private double qa_coins;
     
 	public Student(String smu_email_id, String smu_email, String tele_username, String group_id, String password,
 			int chat_id, String veri_code, String temp_smu_email_address,int avatar_id, int qa_coins) {
@@ -67,11 +67,11 @@ public class Student {
 		return avatar_id;
 	}
 	
-	public int getQa_coins() {
+	public double getQa_coins() {
 		return qa_coins;
 	}
 
-	public void addQa_coins(int amount) {
+	public void addQa_coins(double amount) {
 		qa_coins += amount;
 	}
 
