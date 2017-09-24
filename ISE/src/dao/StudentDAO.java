@@ -83,6 +83,47 @@ public class StudentDAO {
         return returnStudent;
     }
     
+    public Student retrieveStudentByEmailID(String emailID) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        String sql = "";
+        Student returnStudent = null;
+        ResultSet rs = null;
+
+        try {
+            conn = ConnectionManager.getConnection();
+
+            sql = "select smu_email_id, smu_email, tele_username, group_id, password, chat_id, veri_code, temp_smu_email_address,avatar_id,qa_coins from " + TBLNAME + " where smu_email_id = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, emailID);
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String smu_email_id = rs.getString(1);
+                String smu_email= rs.getString(2); 
+                String tele_username= rs.getString(3); 
+                String group_id = rs.getString(4); 
+                String correctPassword = rs.getString(5);
+    			int chat_id = rs.getInt(6); 
+    			String veri_code = rs.getString(7); 
+    			String temp_smu_email_address = rs.getString(8);
+    			int avatar_id = rs.getInt(9);
+    			int qa_coins = rs.getInt(10);
+
+              //  returnStudent = new Student(smu_email_id, tele_id, group_id,correctPassword);
+                returnStudent = new Student(smu_email_id, smu_email, tele_username, group_id, correctPassword,	chat_id, veri_code, temp_smu_email_address,avatar_id,qa_coins);
+            }
+            //return resultUser;
+
+        } catch (SQLException ex) {
+            handleSQLException(ex, sql, "User={" + returnStudent + "}");
+        } finally {
+            ConnectionManager.close(conn, stmt, rs);
+        }
+        return returnStudent;
+    }
+    
     public ArrayList<Student> retrieveStudentBySection(String group_id) {
         Connection conn = null;
         PreparedStatement stmt = null;

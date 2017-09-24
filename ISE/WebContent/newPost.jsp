@@ -48,6 +48,14 @@
 		<div class="viewPostBoarder">
 			<br>
 			<div class="container">
+			
+			<p style="color:red">
+			<% String errmsg = (String)request.getAttribute("newPostMsg");
+			if(errmsg!=null && errmsg.length()>0){
+				out.print(errmsg);
+			}
+			%>
+			</p>
 				<form name="replyForm" method="post" action="PostNewQuestion">
 					
 					

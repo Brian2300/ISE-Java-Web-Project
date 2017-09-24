@@ -7,34 +7,29 @@ public class Transaction {
 private Post post;
 private Student from_stu;
 private Student to_stu;
-private String type;
-private String timestamp;
 private double amount;
+private String timestamp;
+private String type;
 
 
-public Transaction(Student from_stu, Student to_stu, double amount, String timestamp) {
+
+public Transaction(Post post, Student from_stu, Student to_stu, double amount, String timestamp, String type){
+	this.post = post;
 	this.from_stu = from_stu;
 	this.to_stu = to_stu;
+	this.type = type;
 	this.amount = amount;
 	this.timestamp = timestamp;
 }
 
-public Transaction(Student from_stu, Student to_stu, double amount) {
-	this.from_stu = from_stu;
-	this.to_stu = to_stu;
-	this.amount = amount;
-	Timestamp time_stamp = new Timestamp(System.currentTimeMillis());
-	this.timestamp =time_stamp.toString();
-}
 
-public Transaction(Post post, Student from_stu, double amount,String type) {
+
+public Transaction(Post post, Student from_stu, double amount,String timestamp, String type) {
 	this.post = post;
 	this.from_stu = from_stu;
-	//this.type = "toCentralPool";
 	this.type = type;
 	this.amount = amount;
-	Timestamp time_stamp = new Timestamp(System.currentTimeMillis());
-	this.timestamp =time_stamp.toString();
+	this.timestamp = timestamp;
 }
 
 public Post getPost() {

@@ -56,7 +56,12 @@ public class PostNewQuestion extends HttpServlet {
 		//int avatar_id = 1;
 		String post_title =  request.getParameter("postTitle");
 		// check error here
-		double reward_qa_coins =Double.parseDouble(request.getParameter("reward_qa_coins"));
+		String reward_qa_coins_string = request.getParameter("reward_qa_coins");
+		double reward_qa_coins =0;
+		if(reward_qa_coins_string!=null) {
+			reward_qa_coins =Double.parseDouble(reward_qa_coins_string);
+		}
+		
 		String post_content =  request.getParameter("postContent");
 		String[] post_tag =  request.getParameterValues("tag");
 		
@@ -78,6 +83,12 @@ public class PostNewQuestion extends HttpServlet {
 			request.setAttribute("newPostMsg", errorMsg);
 			rd.forward(request, response);
 			return;
+		}else if(!TransactionController.checkSufficientBalance(student, reward_qa_coins)) {
+			errorMsg = "Not sufficient QA coins to reward";
+			RequestDispatcher rd = request.getRequestDispatcher("newPost.jsp");
+			request.setAttribute("newPostMsg", errorMsg);
+			rd.forward(request, response);
+			return;
 		}else if(post_tag == null){
 			errorMsg = "The post tag cannot be empty!";
 			RequestDispatcher rd = request.getRequestDispatcher("newPost.jsp");
@@ -95,14 +106,8 @@ public class PostNewQuestion extends HttpServlet {
 			postDAO.addNewPost(avatar_id, post_title, post_content);
 			tagDAO.addTag(postDAO.lastPostIDofAvatar(avatar_id), post_tag);
 			if(student != null){
-				// step 1 deposit 5 QAcoins to the central pool
-				student.addQa_coins(-reward_qa_coins);
 				Post post = postDAO.retrievePostbyID(postDAO.lastPostIDofAvatar(avatar_id));
-				Transaction tx = new Transaction(post, student, reward_qa_coins, "toCentralPool");
-				StudentDAO.updateQa_coins(student);
-				TransactionDAO.insertTransaction(tx);
-				//TransactionController.depositQa_coins(student, post_qa_coins);
-				
+				TransactionController.depositQa_coins(post, student, reward_qa_coins);
 			}
 			
 			

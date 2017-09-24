@@ -64,8 +64,7 @@ public class ReplyToPost extends HttpServlet {
 			return;
 		}else{
 			if(student != null){
-				student.addQa_coins(reply_qa_coins);
-				StudentDAO.updateQa_coins(student);
+				System.out.println(TransactionController.rewardQa_coins(student,post_id));
 			}
 			postDAO.replyToPost(avatar_id, post_id, tempPostTitle, tempPostContent);
 			RequestDispatcher rd = request.getRequestDispatcher("viewPost.jsp?post_id="+post_id);
