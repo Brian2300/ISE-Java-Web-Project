@@ -36,7 +36,7 @@
 		<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 			<li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
 			<li class="nav-item"><a class="nav-link" href="forumHome.jsp">Forum</a></li>
-			<li class="nav-item"><a class="nav-link" href="QAcoins.jsp">QA Coins</a></li>
+			<li class="nav-item"><a class="nav-link" href="myQAcoins.jsp">QA Coins</a></li>
 			<li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>
 		</ul>
 	</div>

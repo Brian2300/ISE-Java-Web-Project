@@ -21,7 +21,7 @@
 %>
 <p> the total number of QAcoins owned is 
 <%
-out.print("nimahao " + TransactionController.refundAllQa_coins());
+//out.print("nimahao " + TransactionController.refundAllQa_coins());
 String stu_smu_email_id = student.getSmu_email_id();
 StudentDAO stu_dao = new StudentDAO();
 Student updated_student = stu_dao.retrieveStudentByEmailID(stu_smu_email_id);

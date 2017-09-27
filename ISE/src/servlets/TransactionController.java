@@ -57,7 +57,16 @@ public class TransactionController extends HttpServlet {
 	public static void batchProcessRefund() {
 		
 	}
-	
+	public static double getRewardQa_coins(Post post) {
+		ArrayList<Transaction> transactions = TransactionDAO.retrieveTransactionByPostID(post.getPost_id());
+		double rewardQa_coins =0.0;
+		for(Transaction tx: transactions) {
+			if(tx.getType().equals("toCentralPool")){
+				rewardQa_coins = tx.getAmount();
+			}
+		}
+		return rewardQa_coins;
+	}
 	public static void depositQa_coins(Post post, Student student, double amount) {
 		student.addQa_coins(-amount);
 		Timestamp time_stamp = new Timestamp(System.currentTimeMillis());
@@ -65,6 +74,26 @@ public class TransactionController extends HttpServlet {
 		Transaction tx = new Transaction(post, student,null, amount, timestamp, "toCentralPool");
 		StudentDAO.updateQa_coins(student);
 		TransactionDAO.insertTransaction(tx);
+	}
+	public static String requestQa_coins(Student to_student, int post_id) {
+		//String result = "";
+		Double amount = 0.0;
+		ArrayList<Transaction> transactions = TransactionDAO.retrieveTransactionByPostID(post_id);
+		for(Transaction tx:transactions) {
+			if(tx.getType().equals("toCentralPool")&& tx.getAmount()>0) {
+				//Transaction(Post post, Student from_stu, Student to_stu, double amount, String timestamp, String type)
+				PostDAO post_dao = new PostDAO();
+				Post post = post_dao.retrievePostbyID(post_id);
+				Student from_student = tx.getFrom_stu();
+				Timestamp time_stamp = new Timestamp(System.currentTimeMillis());
+				String timestamp =time_stamp.toString();
+				amount = tx.getAmount();
+				Transaction txRequest = new Transaction(post, from_student, to_student, amount,timestamp, "pending");
+				TransactionDAO.insertTransaction(txRequest);
+			}
+		}
+		
+		return ("you are requesting " + amount);
 	}
 	public static String rewardQa_coins(Student to_student, int post_id) {
 		//String result = "";
@@ -84,7 +113,7 @@ public class TransactionController extends HttpServlet {
 				Transaction transfer = new Transaction(post, from_student, to_student, amount,timestamp, "transfer");
 				to_student.addQa_coins(tx.getAmount());
 				StudentDAO.updateQa_coins(to_student);
-				//TransactionDAO.updateTransaction(tx, "settled");
+				TransactionDAO.updateTransactionType(tx,"toCentralPool", "settled");
 				TransactionDAO.insertTransaction(transfer);
 			}
 		}
@@ -98,7 +127,8 @@ public class TransactionController extends HttpServlet {
 	}
 	// refundQa_coins should check all transactions and refund all of them
 	// retrieve all transactions that are not closed and refund them.
-	public static boolean refundAllQa_coins() {
+	public static void refundAllQa_coins() {
+		// this method should also credit all QA coins to B is A didn't apporve within 24 hours
 		ArrayList<Transaction> allTX = TransactionDAO.retrieveTransactionByType("toCentralPool");
 		Timestamp current_time = new Timestamp(System.currentTimeMillis());
 		System.out.println("Current time is "+current_time);
@@ -106,23 +136,30 @@ public class TransactionController extends HttpServlet {
 		System.out.println("One hour before is "+oneHourAgo);
 		System.out.println("One hour before is "+oneHourAgo.before(current_time));
 		for(Transaction tx: allTX) {
-			if(Timestamp.valueOf(tx.getTimestamp()).before(current_time)) {
-				System.out.println(Timestamp.valueOf(tx.getTimestamp())+" is before "+current_time);			
+			if(Timestamp.valueOf(tx.getTimestamp()).before(oneHourAgo)) {
+				System.out.println(Timestamp.valueOf(tx.getTimestamp())+" is before "+oneHourAgo);			
 				tx.getFrom_stu().addQa_coins(tx.getAmount());
 				StudentDAO.updateQa_coins(tx.getFrom_stu());
 				TransactionDAO.updateTransactionType(tx,"toCentralPool","refunded");
 			}
-		}
-		
-		return false;
-		
+		}		
 	}
-
-	public static void refundQa_coins(Student student, double amount) {
-		
-		
+	public static void clearAllPendingTransactions() {
+		// this method clear all pending transactions if there is no action taken against it
+		ArrayList<Transaction> allTX = TransactionDAO.retrieveTransactionByType("toCentralPool");
+		Timestamp current_time = new Timestamp(System.currentTimeMillis());
+		System.out.println("Current time is "+current_time);
+		Timestamp oneHourAgo = new Timestamp(current_time.getTime()-3600000);
+		System.out.println("One hour before is "+oneHourAgo);
+		System.out.println("One hour before is "+oneHourAgo.before(current_time));
+		for(Transaction tx: allTX) {
+			if(Timestamp.valueOf(tx.getTimestamp()).before(oneHourAgo)) {
+				System.out.println(Timestamp.valueOf(tx.getTimestamp())+" is before "+oneHourAgo);			
+				tx.getFrom_stu().addQa_coins(tx.getAmount());
+				StudentDAO.updateQa_coins(tx.getFrom_stu());
+				TransactionDAO.updateTransactionType(tx,"toCentralPool","refunded");
+			}
+		}		
 	}
-	
-	
 
 }

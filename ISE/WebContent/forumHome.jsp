@@ -1,6 +1,6 @@
 <%@include file="protect.jsp"%>
 <%@ page
-	import="java.io.*,java.util.*, java.util.concurrent.*, utility.*, entity.Post, dao.AvatarDAO,dao.PostDAO"%>
+	import="java.io.*,java.util.*, java.util.concurrent.*, utility.*, entity.Post,servlets.TransactionController, dao.AvatarDAO,dao.PostDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html>
 <head>
@@ -84,7 +84,7 @@
 						<tr>
 							<th><a href="viewYourPosts.jsp?avatar_id=<%=post.getAvatar_id()%>"><%=avatarDAO.getAvatarName(post.getAvatar_id())%></a></th>
 							<td><a href="viewPost.jsp?post_id=<%=post.getPost_id()%>"><%=post.getPost_title()%></a></td>
-							<td>20</td>
+							<td><%out.print(TransactionController.getRewardQa_coins(post));%></td>
 							<td>20/20</td>
 							<td><%=post.getTimestamp()%></td>
 							<td><a href="replyToPost.jsp?post_id=<%=post.getPost_id()%>">Reply</a>

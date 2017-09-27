@@ -64,7 +64,9 @@ public class ReplyToPost extends HttpServlet {
 			return;
 		}else{
 			if(student != null){
-				System.out.println(TransactionController.rewardQa_coins(student,post_id));
+				// change here make it become pending instead or rewardQa_coins
+				System.out.println(TransactionController.requestQa_coins(student,post_id));
+				//System.out.println(TransactionController.rewardQa_coins(student,post_id));
 			}
 			postDAO.replyToPost(avatar_id, post_id, tempPostTitle, tempPostContent);
 			RequestDispatcher rd = request.getRequestDispatcher("viewPost.jsp?post_id="+post_id);
