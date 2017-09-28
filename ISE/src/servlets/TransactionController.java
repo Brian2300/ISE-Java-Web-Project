@@ -90,7 +90,7 @@ public class TransactionController extends HttpServlet {
 		StudentDAO.updateQa_coins(student);
 		TransactionDAO.insertTransaction(tx);
 	}
-	public static String requestQa_coins(Student to_student, int post_id) {
+	public static String requestQa_coins(Student to_student, int post_id, int reply_post_id) {
 		//String result = "";
 		Double amount = 0.0;
 		ArrayList<Transaction> transactions = TransactionDAO.retrieveTransactionByPostID(post_id);
@@ -98,7 +98,7 @@ public class TransactionController extends HttpServlet {
 			if(tx.getType().equals("toCentralPool")&& tx.getAmount()>0) {
 				//Transaction(Post post, Student from_stu, Student to_stu, double amount, String timestamp, String type)
 				PostDAO post_dao = new PostDAO();
-				Post post = post_dao.retrievePostbyID(post_id);
+				Post post = post_dao.retrievePostbyID(reply_post_id);
 				Student from_student = tx.getFrom_stu();
 				Timestamp time_stamp = new Timestamp(System.currentTimeMillis());
 				String timestamp =time_stamp.toString();
@@ -134,7 +134,7 @@ public class TransactionController extends HttpServlet {
 			to_student.addQa_coins(amount);
 			StudentDAO.updateQa_coins(to_student);
 			// update the toCentralPool transaction to closed
-			Transaction tx = TransactionDAO.retrieveTransactionByPostIDandType(post.getPost_id(),"toCentralPool");
+			Transaction tx = TransactionDAO.retrieveTransactionByPostIDandType(post.getParent_id(),"toCentralPool");
 			TransactionDAO.updateTransactionType(tx, "toCentralPool", "closed");
 		}else if(type.equals("rejected")) {
 			Transaction approvedTx = new Transaction(post, from_student, to_student, amount,current_time.toString(),"rejected");

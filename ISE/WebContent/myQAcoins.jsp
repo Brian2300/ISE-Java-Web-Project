@@ -48,7 +48,8 @@
 
 						<tr>
 							<th width="20%">Transaction Type</th>
-							<th width="30%">Post Title</th>
+							<th width="15%">Post Title</th>
+							<th width="15%">Reply Content</th>
 							<th width="20%">Transaction Time</th>
 							<th width="10%">QA coins</th>
 							<th width="20%">Actions</th>
@@ -60,11 +61,26 @@
 							for(Transaction transaction: transactions){
 								if(!transaction.getType().equals("closed")){
 								Post post = transaction.getPost();
+								Post parentPost = null;
+								Post childPost = null;
+								if(post.getParent_id()!=0){
+									PostDAO post_dao = new PostDAO();
+									parentPost = post_dao.retrievePostbyID(post.getParent_id());
+									childPost = post;
+									
+								}else{
+									parentPost = post;
+								}
 						%>
 					<tbody>
 						<tr>
 							<td><%=transaction.getType() %></td>
-							<td><a href="viewPost.jsp?post_id=<%=post.getPost_id()%>"><%=post.getPost_title()%></a></td>
+							<td><a href="viewPost.jsp?post_id=<%=parentPost.getPost_id()%>"><%=parentPost.getPost_title()%></a></td>
+							<% if (childPost!=null){ %>
+							<td><a href="viewPost.jsp?post_id=<%=childPost.getPost_id()%>"><%=childPost.getPost_content()%></a></td>
+							<%}else{ %>
+							<td></td>
+							<%} %>
 							<td><%=transaction.getTimestamp()%></td>
 							<td><%=transaction.getAmount()%></td>
 							<td>

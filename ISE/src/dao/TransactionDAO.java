@@ -378,9 +378,7 @@ public class TransactionDAO {
     			
     }
     public static void updateTransactionType(Transaction tx, String oldType, String newType){
-		
-    	
-    	
+
     	Connection conn = null;
 	    PreparedStatement stmt = null;
 	    String sql = "";	   
@@ -390,7 +388,10 @@ public class TransactionDAO {
 	    	conn = ConnectionManager.getConnection();
 	    	sql = "UPDATE "+ TBLNAME +" SET `type`=? WHERE `post_id`=? and from_stu=? and `type` =?";
 	        stmt = conn.prepareStatement(sql);
-	        String from_stu = tx.getFrom_stu().getSmu_email_id();
+	        String from_stu = null;
+	        if(tx.getFrom_stu()!=null) {
+	        	from_stu = tx.getFrom_stu().getSmu_email_id();
+	        }
 	        String post_id = Integer.toString(tx.getPost().getPost_id());
 	        stmt.setString(1,newType); 
 	        stmt.setString(2,post_id);
