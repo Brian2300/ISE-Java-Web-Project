@@ -63,12 +63,15 @@ public class ReplyToPost extends HttpServlet {
 			rd.forward(request, response);
 			return;
 		}else{
+			
+			postDAO.replyToPost(avatar_id, post_id, tempPostTitle, tempPostContent);
 			if(student != null){
 				// change here make it become pending instead or rewardQa_coins
 				System.out.println(TransactionController.requestQa_coins(student,post_id));
+				Post post = postDAO.retrievePostbyID(postDAO.lastPostIDofAvatar(avatar_id));
+				TransactionController.rewardThoughtfulnessQAcoins(post, student);
 				//System.out.println(TransactionController.rewardQa_coins(student,post_id));
 			}
-			postDAO.replyToPost(avatar_id, post_id, tempPostTitle, tempPostContent);
 			RequestDispatcher rd = request.getRequestDispatcher("viewPost.jsp?post_id="+post_id);
 			rd.forward(request, response);
 			return;

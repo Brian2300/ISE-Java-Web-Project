@@ -68,7 +68,7 @@ public class StudentDAO {
     			String veri_code = rs.getString(7); 
     			String temp_smu_email_address = rs.getString(8);
     			int avatar_id = rs.getInt(9);
-    			int qa_coins = rs.getInt(10);
+    			double qa_coins = rs.getDouble(10);
 
               //  returnStudent = new Student(smu_email_id, tele_id, group_id,correctPassword);
                 returnStudent = new Student(smu_email_id, smu_email, tele_username, group_id, correctPassword,	chat_id, veri_code, temp_smu_email_address,avatar_id,qa_coins);
@@ -109,7 +109,7 @@ public class StudentDAO {
     			String veri_code = rs.getString(7); 
     			String temp_smu_email_address = rs.getString(8);
     			int avatar_id = rs.getInt(9);
-    			int qa_coins = rs.getInt(10);
+    			double qa_coins = rs.getDouble(10);
 
               //  returnStudent = new Student(smu_email_id, tele_id, group_id,correctPassword);
                 returnStudent = new Student(smu_email_id, smu_email, tele_username, group_id, correctPassword,	chat_id, veri_code, temp_smu_email_address,avatar_id,qa_coins);
@@ -149,7 +149,7 @@ public class StudentDAO {
     			String veri_code = rs.getString(7); 
     			String temp_smu_email_address = rs.getString(8);
     			int avatar_id = rs.getInt(9);
-    			int qa_coins = rs.getInt(10);
+    			double qa_coins = rs.getDouble(10);
 
               //  returnStudent = new Student(smu_email_id, tele_id, group_id,correctPassword);
                 students.add(new Student(smu_email_id, smu_email, tele_username, group_id, correctPassword,	chat_id, veri_code, temp_smu_email_address,avatar_id,qa_coins));

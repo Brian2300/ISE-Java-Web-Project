@@ -23,15 +23,6 @@ public Transaction(Post post, Student from_stu, Student to_stu, double amount, S
 }
 
 
-
-public Transaction(Post post, Student from_stu, double amount,String timestamp, String type) {
-	this.post = post;
-	this.from_stu = from_stu;
-	this.type = type;
-	this.amount = amount;
-	this.timestamp = timestamp;
-}
-
 public Post getPost() {
 	return post;
 }

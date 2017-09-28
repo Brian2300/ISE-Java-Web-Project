@@ -58,7 +58,8 @@ public class PostNewQuestion extends HttpServlet {
 		// check error here
 		String reward_qa_coins_string = request.getParameter("reward_qa_coins");
 		double reward_qa_coins =0;
-		if(reward_qa_coins_string!=null) {
+		if(reward_qa_coins_string.length()>0) {
+			System.out.println("the reward QA coins are >"+reward_qa_coins_string+"<");
 			reward_qa_coins =Double.parseDouble(reward_qa_coins_string);
 		}
 		
@@ -79,6 +80,12 @@ public class PostNewQuestion extends HttpServlet {
 		String errorMsg = "";
 		if(post_title.isEmpty()||post_title == null){
 			errorMsg = "The post title cannot be empty!";
+			RequestDispatcher rd = request.getRequestDispatcher("newPost.jsp");
+			request.setAttribute("newPostMsg", errorMsg);
+			rd.forward(request, response);
+			return;
+		}else if(reward_qa_coins<0) {
+			errorMsg = "Reward QA coins cannot be negative";
 			RequestDispatcher rd = request.getRequestDispatcher("newPost.jsp");
 			request.setAttribute("newPostMsg", errorMsg);
 			rd.forward(request, response);
@@ -107,7 +114,9 @@ public class PostNewQuestion extends HttpServlet {
 			tagDAO.addTag(postDAO.lastPostIDofAvatar(avatar_id), post_tag);
 			if(student != null){
 				Post post = postDAO.retrievePostbyID(postDAO.lastPostIDofAvatar(avatar_id));
+				TransactionController.rewardThoughtfulnessQAcoins(post, student);
 				TransactionController.depositQa_coins(post, student, reward_qa_coins);
+				
 			}
 			
 			

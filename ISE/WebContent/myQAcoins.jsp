@@ -28,11 +28,13 @@
 	<%
 	Student student = (Student) session.getAttribute("student");
 	TransactionController.refundAllQa_coins();
+	TransactionController.clearAllPendingTransactions();
 	String stu_smu_email_id = student.getSmu_email_id();
 	StudentDAO stu_dao = new StudentDAO();
 	Student updated_student = stu_dao.retrieveStudentByEmailID(stu_smu_email_id);
 	session.setAttribute("student", updated_student);
-	out.print("QA coins balance: " +updated_student.getQa_coins());
+	out.print("Student id: " +updated_student.getSmu_email_id()+"</br>");
+	out.print("QA coins balance: " +updated_student.getQa_coinsString());
 	%>
 	<div class="row justify-content-md-center">
 		<div class="col-12 col-md-auto">
@@ -52,9 +54,10 @@
 						</tr>
 					</thead>
 						<%
-						ArrayList<Transaction> transactions = TransactionDAO.retrieveTransactionByFromStu(student);
+						ArrayList<Transaction> transactions = TransactionDAO.retrieveTransactionByRelatedStudent(student);
 						if(transactions!=null && transactions.size()>0){
 							for(Transaction transaction: transactions){
+								if(!transaction.getType().equals("closed")){
 								Post post = transaction.getPost();
 						%>
 					<tbody>
@@ -64,20 +67,27 @@
 							<td><%=transaction.getTimestamp()%></td>
 							<td><%=transaction.getAmount()%></td>
 							<td>
-							<%if(transaction.getType().equals("pending")){ 
+							<%
+							if(transaction.getFrom_stu()!= null){
+								if(transaction.getType().equals("pending")&&transaction.getFrom_stu().getSmu_email_id().equals(updated_student.getSmu_email_id())){ 
+									session.setAttribute("pendingTransaction", transaction);
+							
+							
+							
 						 // if approve or reject if pressed, parameter tx is pass to TXController 
 							%>
 								<div class="btn-group" role="group" aria-label="Basic example">
-								<form action="/myQAcoins" method="post">
-							    <button type="submit" name="button" value="approved">Approve</button>
-							    <button type="submit" name="button" value="rejected">Reject</button>
+								<form action="myQAcoins" method="post">
+							    <button class="btn btn-secondary" type="submit" name="button" value="approved">Approve</button>
+							    <button class="btn btn-secondary" type="submit" name="button" value="rejected">Reject</button>
 								</form>
-							<%} %>
+							<%} }%>
 								</div>
 							</td>
 						</tr>
 					</tbody>
 						<%	}
+						}
 						}
 						%>
 				</table>

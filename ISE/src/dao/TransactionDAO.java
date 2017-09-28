@@ -30,7 +30,10 @@ public class TransactionDAO {
         PreparedStatement stmt = null;
         String sql = "";
         
-        String from_stu_string = tx.getFrom_stu().getSmu_email_id();
+        String from_stu_string = null;
+        if(tx.getFrom_stu()!=null) {
+        	from_stu_string = tx.getFrom_stu().getSmu_email_id();
+        }     
         String post_id_string = Integer.toString(tx.getPost().getPost_id());
         String to_stu_string = null;
         if(tx.getTo_stu()!=null) {
@@ -53,7 +56,7 @@ public class TransactionDAO {
             stmt.setString(4, tx_amount_string);
             stmt.setString(5, tx_time_string);
             stmt.setString(6, type_string);
-            System.out.println("going to update TX "+stmt );
+            System.out.println("going to insert TX "+stmt );
             numRecordsUpdated = stmt.executeUpdate();
             System.out.println("num of records updated "+numRecordsUpdated );
         } catch (SQLException ex) {
@@ -220,6 +223,59 @@ public class TransactionDAO {
         return transactions;
     			
     }
+    
+    public static Transaction retrieveTransactionByPostIDandType(int post_id, String txType) {
+		
+    	Connection conn = null;
+        PreparedStatement stmt = null;
+        String sql = "";
+        Transaction transaction = null;
+        ResultSet rs = null;
+                
+        try {
+            conn = ConnectionManager.getConnection();
+
+            sql = "SELECT * FROM "+TBLNAME+" WHERE post_id = ? and type =?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, Integer.toString(post_id));
+            stmt.setString(2, txType);
+            rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                String from_stu = rs.getString(1);
+                int record_post_id = rs.getInt(2);
+                String to_stu = rs.getString(3);
+                Double tx_amount = Double.parseDouble(rs.getString(4));
+                String tx_time = rs.getString(5);
+                String type = rs.getString(6);
+                
+                PostDAO post_dao = new PostDAO();
+                Post post = post_dao.retrievePostbyID(record_post_id);
+                StudentDAO student_dao = new StudentDAO();
+                Student from_student = null;
+                Student to_student = null;
+                if(from_stu!=null && from_stu.length()>0) {
+                	from_student = student_dao.retrieveStudentByEmailID(from_stu);
+                }
+                if(to_stu!=null && to_stu.length()>0) {
+                	to_student = student_dao.retrieveStudentByEmailID(to_stu);
+                }
+                
+                transaction = new Transaction(post, from_student,to_student, tx_amount, tx_time, type);
+
+                
+            }
+            //return resultUser;
+
+        } catch (SQLException ex) {
+            handleSQLException(ex, sql, "exception");
+        } finally {
+            ConnectionManager.close(conn, stmt, rs);
+        }
+        return transaction;
+    			
+    }
+    
     public static ArrayList<Transaction> retrieveTransactionByFromStu(Student student) {
 		
     	Connection conn = null;
@@ -256,7 +312,7 @@ public class TransactionDAO {
                 	to_student = student_dao.retrieveStudentByEmailID(to_stu);
                 }
                 
-                Transaction tx = new Transaction(post, from_student,tx_amount, tx_time, type);
+                Transaction tx = new Transaction(post, from_student,to_student, tx_amount, tx_time, type);
                 transactions.add(tx);
                 
             }
@@ -270,7 +326,57 @@ public class TransactionDAO {
         return transactions;
     			
     }
-    
+    public static ArrayList<Transaction> retrieveTransactionByRelatedStudent(Student student) {
+		
+    	Connection conn = null;
+        PreparedStatement stmt = null;
+        String sql = "";
+        ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+        ResultSet rs = null;
+                
+        try {
+            conn = ConnectionManager.getConnection();
+
+            sql = "SELECT * FROM "+TBLNAME+" WHERE from_stu =? or to_stu=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, student.getSmu_email_id());
+            stmt.setString(2, student.getSmu_email_id());
+            rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                String from_stu = rs.getString(1);
+                int post_id = rs.getInt(2);
+                String to_stu = rs.getString(3);
+                Double tx_amount = Double.parseDouble(rs.getString(4));
+                String tx_time = rs.getString(5);
+                String type = rs.getString(6);
+                
+                PostDAO post_dao = new PostDAO();
+                Post post = post_dao.retrievePostbyID(post_id);
+                StudentDAO student_dao = new StudentDAO();
+                Student from_student = null;
+                Student to_student = null;
+                if(from_stu!=null && from_stu.length()>0) {
+                	from_student = student_dao.retrieveStudentByEmailID(from_stu);
+                }
+                if(to_stu!=null && to_stu.length()>0) {
+                	to_student = student_dao.retrieveStudentByEmailID(to_stu);
+                }
+                
+                Transaction tx = new Transaction(post, from_student,to_student, tx_amount, tx_time, type);
+                transactions.add(tx);
+                
+            }
+            //return resultUser;
+
+        } catch (SQLException ex) {
+            handleSQLException(ex, sql, "exception");
+        } finally {
+            ConnectionManager.close(conn, stmt, rs);
+        }
+        return transactions;
+    			
+    }
     public static void updateTransactionType(Transaction tx, String oldType, String newType){
 		
     	

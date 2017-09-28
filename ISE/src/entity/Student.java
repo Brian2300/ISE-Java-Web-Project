@@ -17,7 +17,7 @@ public class Student {
     private double qa_coins;
     
 	public Student(String smu_email_id, String smu_email, String tele_username, String group_id, String password,
-			int chat_id, String veri_code, String temp_smu_email_address,int avatar_id, int qa_coins) {
+			int chat_id, String veri_code, String temp_smu_email_address,int avatar_id, double qa_coins) {
 		super();
 		this.smu_email_id = smu_email_id;
 		this.smu_email = smu_email;
@@ -69,6 +69,9 @@ public class Student {
 	
 	public double getQa_coins() {
 		return qa_coins;
+	}
+	public String getQa_coinsString() {
+		return String.format("%.2f", qa_coins);
 	}
 
 	public void addQa_coins(double amount) {

@@ -36,9 +36,25 @@ public class myQAcoins extends HttpServlet {
 			throws ServletException, IOException {
 		String errorMsg = "";
 		HttpSession session = request.getSession();
-		Transaction tx = (Transaction)session.getAttribute("pendingTransaction");
+		Transaction pendingTx = (Transaction)session.getAttribute("pendingTransaction");
+		if(pendingTx == null) {
+			System.out.println("Err pendingTx is null in myQAcoins page");
+			
+		}
 		String txType = request.getParameter("button");
+		if(txType == null) {
+			errorMsg ="type is null";
+		}else if(txType.equals("approved")) {
+			//QA coins transfer from central pool to B's account, which is originated from A's account
+			System.out.println("user pressed approved");
+			TransactionController.rewardQa_coins(pendingTx, "approved");
+		}else if(txType.equals("rejected")) {
+			//A rejects the transaction, pending become rejected, toCentralPool become closed
+			System.out.println("user pressed rejected");
+			TransactionController.rewardQa_coins(pendingTx, "rejected");
+		}
 		
+		response.sendRedirect("myQAcoins.jsp");
 	}
 	
 
