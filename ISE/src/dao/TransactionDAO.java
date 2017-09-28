@@ -337,7 +337,7 @@ public class TransactionDAO {
         try {
             conn = ConnectionManager.getConnection();
 
-            sql = "SELECT * FROM "+TBLNAME+" WHERE from_stu =? or to_stu=?";
+            sql = "SELECT * FROM "+TBLNAME+" WHERE from_stu =? or to_stu=? ORDER BY `tx_time` DESC ";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, student.getSmu_email_id());
             stmt.setString(2, student.getSmu_email_id());

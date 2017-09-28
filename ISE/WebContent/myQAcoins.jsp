@@ -25,6 +25,7 @@
 			<hr>
 		</header>
 	</div>
+	<div class='container' align='center'>
 	<%
 	Student student = (Student) session.getAttribute("student");
 	TransactionController.refundAllQa_coins();
@@ -36,6 +37,7 @@
 	out.print("Student id: " +updated_student.getSmu_email_id()+"</br>");
 	out.print("QA coins balance: " +updated_student.getQa_coinsString());
 	%>
+	</div>
 	<div class="row justify-content-md-center">
 		<div class="col-12 col-md-auto">
 			
@@ -46,11 +48,10 @@
 
 						<tr>
 							<th width="20%">Transaction Type</th>
-							<th width="10%">Post Title</th>
+							<th width="30%">Post Title</th>
 							<th width="20%">Transaction Time</th>
 							<th width="10%">QA coins</th>
-							<th width="11%">Actions</th>
-							<th>Actions</th>
+							<th width="20%">Actions</th>
 						</tr>
 					</thead>
 						<%
