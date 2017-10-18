@@ -4,6 +4,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html>
 <head>
+<title>Student Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<link rel="stylesheet" href="style/css/bootstrap.min.css">
+<link rel="stylesheet" href="style/css/font-awesome.min.css">
+<link rel="stylesheet" href="style/css/forumHomePageLayout.css">
+
 <%@ include file="navigationBar.jsp"%>
 
 
@@ -48,7 +56,7 @@
 		.transition()
 		.delay(function(d,i){return i*100;})
 		.duration(function(d,i){return i*50;})
-		.attr("fill", function(d){if(d.attendance==1){return "green";}else{return "red";}});
+		.attr("fill", function(d){if(d.attendance==1){return "#00ffff";}else{return "#ff9999";}});
 	
 	var	chart2 = d3.select("body")
 	.append("svg")
