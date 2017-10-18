@@ -77,6 +77,19 @@ public class Student {
 	public void addQa_coins(double amount) {
 		qa_coins += amount;
 	}
+	
+	public String getJSON() {
+		String dataJson = "[\r\n" + 
+		"{\"name\": \"Marina\", \"age\":30},\r\n" + 
+		"{\"name\": \"Fred\", \"age\":50},\r\n" + 
+		"{\"name\": \"Francis\", \"age\":12}\r\n" + 
+		"]";
+		
+
+		System.out.println(dataJson);
+		return dataJson;
+
+	}
 
 
 }

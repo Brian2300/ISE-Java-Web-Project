@@ -15,7 +15,7 @@
 			<li class="nav-item"><a class="nav-link"
 				href="postClassSummary.jsp">Post-class Summary</a></li>
 			<li class="nav-item"><a class="nav-link" href="consultation.jsp">Consultation</a></li>
-			<li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
+			<li class="nav-item"><a class="nav-link" href="dashboard">Dashboard</a></li>
 			<li class="nav-item"><a class="nav-link" href="forumHome.jsp">Forum</a></li>
 			<li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>
 		</ul>

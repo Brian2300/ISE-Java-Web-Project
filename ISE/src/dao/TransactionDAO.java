@@ -25,6 +25,18 @@ public class TransactionDAO {
         throw new RuntimeException(msg, ex);
     }
     
+    public static String getJsondata(){
+		/*String dataJson = "[\r\n" + 
+				"{\"name\": \"Marina\", \"age\":30},\r\n" + 
+				"{\"name\": \"Fred\", \"age\":50},\r\n" + 
+				"{\"name\": \"Francis\", \"age\":12}\r\n" + 
+				"]";
+				*/
+		String dataJson = "100";
+		System.out.println(dataJson);
+		return dataJson;
+	}
+    
     public static boolean insertTransaction(Transaction tx) {
         Connection conn = null;
         PreparedStatement stmt = null;
