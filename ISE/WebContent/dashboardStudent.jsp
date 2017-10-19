@@ -32,7 +32,7 @@
  
  	var	margin = {top: 30, right: 20, bottom: 30, left: 50},
     	width = 1000 - margin.left - margin.right,
-    	height = 300 - margin.top - margin.bottom;
+    	height = 270 - margin.top - margin.bottom;
     
     var canvas = d3.select("body")
     				.append("svg")
@@ -93,14 +93,14 @@
 						.attr("width", 50)
     					.attr("height", function(d){return d.value;})
     					.attr("x",function(d, i){return i*55;})
-    					.attr("y",function(d){return 260-d.value;}) // use a scale
+    					.attr("y",function(d){return 200-d.value;}) // use a scale
     					.attr("fill","red");
     					
  qa_bar.append("text")
 			.text("hello")
 			.style("text-anchor", "middle")
 			.attr("x",function(d, i){return i*55;})
-    		.attr("y",function(d){return 260-d.value;})
+    		.attr("y",function(d){return 200-d.value;})
 			.attr("fill", "blue")
 			.attr("class", "timeLabel mono axis axis-worktime");
 //
