@@ -23,7 +23,7 @@
 	<script>
   var attendanceData=<%=attendanceData%>
   //DashboardDAO.retrieveWeeklyAttendanceByStudent("jj.zheng.2013")
-  var title =["QA coins", "out","in"];
+  
     console.log(attendanceData);
     
  // Set the dimensions of the canvas / graph
@@ -40,6 +40,14 @@
 					.attr("height", height + margin.top + margin.bottom)
 					.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    canvas.append("text")
+    	.attr("id","title")
+    	.text("Weekly attendance")
+    	.attr("x",10)
+    	.attr("y",10)
+    	.attr("font-family","dans-serif")
+	     .attr("font-size", "20px");
+    
     var square = canvas.selectAll("rect")
     					.data(attendanceData)
     					.enter()
@@ -52,20 +60,59 @@
     						.attr("rx",5)
     						.attr("ry",5)
     						.attr("fill","white");
+    
+    
 	d3.selectAll("rect")
 		.transition()
 		.delay(function(d,i){return i*100;})
 		.duration(function(d,i){return i*50;})
 		.attr("fill", function(d){if(d.attendance==1){return "#00ffff";}else{return "#ff9999";}});
 	
+	square.on("mouseover", handleMouseOver)
+		  .on("mouseout", handleMouseOut);
+
+	 function handleMouseOver(d, i) {  // Add interactivity
+
+         // Use D3 to select element, change color and size
+         d3.select(this).attr({
+        	 x: function(){return (i*55-2);},
+			 y: 98,
+        	 width: 54,
+	         height: 54
+         });
+         // Specify where to put label of text
+         canvas.append("text").attr({
+            id: "t" + d.week+"-" + i,  // Create an id for text so we can select it later for removing on mouseout
+             x: function() {return i*55; },
+             y: function() {return 90; }
+         })
+         .text(function() {
+           return ("week" + d.week) ;  // Value of the text[d.week]
+         }).attr("fill","black")
+             .attr("font-family","dans-serif")
+			.attr("font-size", "20px");
+       }
+
+      function handleMouseOut(d, i) {
+         // Use D3 to select element, change color back to normal
+         d3.select(this).attr({
+        	 x: function(){return (i*55);},
+			 y: 100,
+        	 width: 50,
+	         height:50
+         });
+         // Select text by id and then remove
+         d3.select("#t" + d.week+"-" + i).remove();  // Remove text location
+       }
+
 	var	chart2 = d3.select("body")
 	.append("svg")
 		.attr("width", width + margin.left + margin.right)
 		.attr("height", height + margin.top + margin.bottom)
 			.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	
-	var textMaker = canvas.selectAll("text")
+	var title =["QQQQQQQQQ", "out","in"];
+	var textMaker = chart2.selectAll("text")
 					.data(title)
 					.enter()
 					.append("text");
@@ -74,10 +121,8 @@
 							.attr("y", 60)
 							.text(function(d){return d})
 							.attr("font-family","dans-serif")
-							.attr("font-size", "12px")
-							.attr("z-index", ".3")
-							.attr("fill", "black");
-					
+							.attr("font-size", "20px");
+				
 	
 	//dashboard for QA coins
 	var qa_coins = [100,20,30];
