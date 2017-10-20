@@ -11,13 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import dao.PostDAO;
-import dao.StudentDAO;
 import dao.TagDAO;
-import dao.TransactionDAO;
 import entity.Post;
 import entity.Professor;
 import entity.Student;
-import entity.Transaction;
 
 /**
  * Servlet implementation class PostNewQuestion
@@ -25,8 +22,6 @@ import entity.Transaction;
 @WebServlet("/PostNewQuestion")
 public class PostNewQuestion extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private static final double post_qa_coins = 5;
-    
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -45,21 +40,15 @@ public class PostNewQuestion extends HttpServlet {
 		int avatar_id=0;
 		if(student != null){
 			avatar_id = student.getAvatar_id();
-			System.out.println(avatar_id);
 		}
-		
 		if(professor != null){
 			avatar_id = professor.getAvatar_id();
-			System.out.println(avatar_id);
 		}
-		
-		//int avatar_id = 1;
 		String post_title =  request.getParameter("postTitle");
 		// check error here
 		String reward_qa_coins_string = request.getParameter("reward_qa_coins");
 		double reward_qa_coins =0;
-		if(reward_qa_coins_string.length()>0) {
-			System.out.println("the reward QA coins are >"+reward_qa_coins_string+"<");
+		if(student != null && reward_qa_coins_string!=null) {
 			reward_qa_coins =Double.parseDouble(reward_qa_coins_string);
 		}
 		
@@ -84,13 +73,13 @@ public class PostNewQuestion extends HttpServlet {
 			request.setAttribute("newPostMsg", errorMsg);
 			rd.forward(request, response);
 			return;
-		}else if(reward_qa_coins<0) {
+		}else if(student != null&&reward_qa_coins<0) {
 			errorMsg = "Reward QA coins cannot be negative";
 			RequestDispatcher rd = request.getRequestDispatcher("newPost.jsp");
 			request.setAttribute("newPostMsg", errorMsg);
 			rd.forward(request, response);
 			return;
-		}else if(!TransactionController.checkSufficientBalance(student, reward_qa_coins)) {
+		}else if(student != null&&!TransactionController.checkSufficientBalance(student, reward_qa_coins)) {
 			errorMsg = "Not sufficient QA coins to reward";
 			RequestDispatcher rd = request.getRequestDispatcher("newPost.jsp");
 			request.setAttribute("newPostMsg", errorMsg);

@@ -68,16 +68,20 @@
 
 						</div>
 					</div>
-					
-					<div class="form-group row">
-						<label for="inputEmail3" class="col-sm-2 col-form-label"><strong>Reward
-						QA Coins</strong></label>
-						<div class="col-sm-9">
-							<input type="number" name="reward_qa_coins" class="form-control"
-								id="inputEmail3" placeholder="Enter amount of QA coins" />
+		<%Student student = (Student)session.getAttribute("student");
+		if(student != null){
+			out.println("<div class=\"form-group row\">\r\n" + 
+					"						<label for=\"inputEmail3\" class=\"col-sm-2 col-form-label\"><strong>Reward\r\n" + 
+					"						QA Coins</strong></label>\r\n" + 
+					"						<div class=\"col-sm-9\">\r\n" + 
+					"							<input type=\"number\" name=\"reward_qa_coins\" class=\"form-control\"\r\n" + 
+					"								id=\"inputEmail3\" placeholder=\"Enter amount of QA coins\" />\r\n" + 
+					"\r\n" + 
+					"						</div>\r\n" + 
+					"					</div>");
 
-						</div>
-					</div>
+		} %>			
+					
 
 					<div class="form-group row">
 						<label for="inputEmail3" class="col-sm-2 col-form-label"><strong>Tag</strong></label>
