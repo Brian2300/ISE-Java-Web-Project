@@ -30,6 +30,20 @@
 			<h2>Post a New Question</h2>
 			<hr>
 		</header>
+		<%
+			// error msg for assign marks
+			String errorMsgs = (String) request.getAttribute("newPostMsg");
+			if (errorMsgs != null && errorMsgs.length() > 0) {
+				out.println("<div id = 'myElem' class='container' align='center' style='padding:0px;height:40px'>");
+				out.println("<div class='alert alert-warning' style='width:400px'>");
+				out.println("<font color='red'>");
+				out.println(errorMsgs);
+				out.println("</font>");
+			}
+			request.removeAttribute("newPostMsg");
+			out.println("</div>");
+			out.println("</div><br>");
+		%>
 		<div class="row justify-content-md-left">
 			<div class="col-12 col-md-auto">
 
@@ -39,7 +53,7 @@
 						<div class="btn-group" role="group" aria-label="Basic example">
 
 							<a class="btn btn-outline-primary" style="width: 10rem"
-								href="forumHome.jsp"><b>Back to Forum </b></a>
+								href="https://research.larc.smu.edu.sg/ISE/forumHome.jsp"><b>Back to Forum </b></a>
 						</div>
 					</div>
 				</div>
@@ -48,40 +62,28 @@
 		<div class="viewPostBoarder">
 			<br>
 			<div class="container">
-			
-			<p style="color:red">
-			<% String errmsg = (String)request.getAttribute("newPostMsg");
-			if(errmsg!=null && errmsg.length()>0){
-				out.print(errmsg);
-			}
-			%>
-			</p>
 				<form name="replyForm" method="post" action="PostNewQuestion">
-					
-					
 					<div class="form-group row">
 						<label for="inputEmail3" class="col-sm-2 col-form-label"><strong>Post
 								Title</strong></label>
 						<div class="col-sm-9">
 							<input type="text" name="postTitle" class="form-control"
-								id="inputEmail3" placeholder="Enter your post title" />
+								id="inputEmail3" maxlength="140" placeholder="Enter your post title" />
 
 						</div>
 					</div>
-		<%Student student = (Student)session.getAttribute("student");
-		if(student != null){
-			out.println("<div class=\"form-group row\">\r\n" + 
-					"						<label for=\"inputEmail3\" class=\"col-sm-2 col-form-label\"><strong>Reward\r\n" + 
-					"						QA Coins</strong></label>\r\n" + 
-					"						<div class=\"col-sm-9\">\r\n" + 
-					"							<input type=\"number\" name=\"reward_qa_coins\" class=\"form-control\"\r\n" + 
-					"								id=\"inputEmail3\" placeholder=\"Enter amount of QA coins\" />\r\n" + 
-					"\r\n" + 
-					"						</div>\r\n" + 
-					"					</div>");
-
-		} %>			
-					
+				 <%Student student = (Student)session.getAttribute("student");
+					if(student != null){
+						out.println("<div class=\"form-group row\">\r\n" + 
+								"						<label for=\"inputEmail3\" class=\"col-sm-2 col-form-label\"><strong>Reward\r\n" + 
+								"						QA Coins</strong></label>\r\n" + 
+								"						<div class=\"col-sm-9\">\r\n" + 
+								"							<input type=\"number\" name=\"reward_qa_coins\" class=\"form-control\"\r\n" + 
+								"								id=\"inputEmail3\" placeholder=\"Enter amount of QA coins\" />\r\n" + 
+								"\r\n" + 
+								"						</div>\r\n" + 
+								"					</div>");
+				} %>	
 
 					<div class="form-group row">
 						<label for="inputEmail3" class="col-sm-2 col-form-label"><strong>Tag</strong></label>

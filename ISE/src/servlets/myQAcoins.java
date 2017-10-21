@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -36,12 +37,14 @@ public class myQAcoins extends HttpServlet {
 			throws ServletException, IOException {
 		String errorMsg = "";
 		HttpSession session = request.getSession();
-		Transaction pendingTx = (Transaction)session.getAttribute("pendingTransaction");
-		if(pendingTx == null) {
-			System.out.println("Err pendingTx is null in myQAcoins page");
-			
+		ArrayList<Transaction> pendingTxs =(ArrayList<Transaction>)session.getAttribute("pendingTransaction");
+		if(pendingTxs == null) {
+			errorMsg = "no pending transactions";
+			response.sendRedirect("myQAcoins.jsp");
 		}
-		String txType = request.getParameter("button");
+		String txType = request.getParameter("button").substring(0, 8);
+		int index = Integer.parseInt(request.getParameter("button").substring(8));
+		Transaction pendingTx = pendingTxs.get(index);
 		if(txType == null) {
 			errorMsg ="type is null";
 		}else if(txType.equals("approved")) {

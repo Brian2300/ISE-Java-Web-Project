@@ -57,9 +57,7 @@ public class TransactionController extends HttpServlet {
 		String timestamp =time_stamp.toString();
 		Student from_stu = null;
 		Transaction tx = new Transaction(post,from_stu,to_student,rewardQa_coins, timestamp,"sysReward");
-		System.out.println("sysReward new tx type"+tx.getType());
 		TransactionDAO.insertTransaction(tx);
-		System.out.println("inserting sysReward");
 		to_student.addQa_coins(rewardQa_coins);
 		StudentDAO.updateQa_coins(to_student);
 		
@@ -114,7 +112,6 @@ public class TransactionController extends HttpServlet {
 	public static String rewardQa_coins(Transaction pendingTx, String type) {
 		String result = "";
 		if(pendingTx == null) {
-			System.out.println("Err pendingTx is null");
 			return "Err pendingTx is null";
 		}
 		Student from_student = pendingTx.getFrom_stu();
@@ -135,7 +132,23 @@ public class TransactionController extends HttpServlet {
 			StudentDAO.updateQa_coins(to_student);
 			// update the toCentralPool transaction to closed
 			Transaction tx = TransactionDAO.retrieveTransactionByPostIDandType(post.getParent_id(),"toCentralPool");
+			
 			TransactionDAO.updateTransactionType(tx, "toCentralPool", "closed");
+			//close other pending transactions
+			
+			int post_id = tx.getPost().getPost_id();
+			PostDAO postDAO = new PostDAO();
+			ArrayList<Post> childrenPosts = postDAO.retrieveChildPost(post_id);
+			for(Post childPost:childrenPosts) {
+				ArrayList<Transaction>otherRelatedTransactions = TransactionDAO.retrieveTransactionByPostID(childPost.getPost_id());
+				for(Transaction relatedTx: otherRelatedTransactions) {
+					if (relatedTx.getType().equals("pending")){
+						TransactionDAO.updateTransactionType(relatedTx, "pending", "closed");
+					}
+				}
+			}
+			
+			
 		}else if(type.equals("rejected")) {
 			Transaction approvedTx = new Transaction(post, from_student, to_student, amount,current_time.toString(),"rejected");
 			TransactionDAO.insertTransaction(approvedTx);
@@ -144,26 +157,20 @@ public class TransactionController extends HttpServlet {
 		}else {
 			result ="type not valid";
 		}
+		
 		return ("you are rewarded" + amount);
 	}
 	
-	public static void closeTransaction(Transaction tx, Student to_stu) {
-		
-		
-	}
+
 	// refundQa_coins should check all transactions and refund all of them
 	// retrieve all transactions that are not closed and refund them.
 	public static void refundAllQa_coins() {
 		// this method should also credit all QA coins to B is A didn't apporve within 24 hours
 		ArrayList<Transaction> allTX = TransactionDAO.retrieveTransactionByType("toCentralPool");
 		Timestamp current_time = new Timestamp(System.currentTimeMillis());
-		System.out.println("Current time is "+current_time);
-		Timestamp oneHourAgo = new Timestamp(current_time.getTime()-3600000);
-		System.out.println("One hour before is "+oneHourAgo);
-		System.out.println("One hour before is "+oneHourAgo.before(current_time));
+		Timestamp oneHourAgo = new Timestamp(current_time.getTime()-3600000*24);//it is 1 day now
 		for(Transaction tx: allTX) {
-			if(Timestamp.valueOf(tx.getTimestamp()).before(oneHourAgo)) {
-				System.out.println(Timestamp.valueOf(tx.getTimestamp())+" is before "+oneHourAgo);			
+			if(Timestamp.valueOf(tx.getTimestamp()).before(oneHourAgo)) {			
 				tx.getFrom_stu().addQa_coins(tx.getAmount());
 				StudentDAO.updateQa_coins(tx.getFrom_stu());
 				TransactionDAO.updateTransactionType(tx,"toCentralPool","refunded");
@@ -175,23 +182,15 @@ public class TransactionController extends HttpServlet {
 		// will auto credit to B's account after 24 hours
 		ArrayList<Transaction> allTX = TransactionDAO.retrieveTransactionByType("pending");
 		Timestamp current_time = new Timestamp(System.currentTimeMillis());
-		System.out.println("Current time is "+current_time);
-		Timestamp oneHourAgo = new Timestamp(current_time.getTime()-60000);//it is 1 minute now
-		System.out.println("One hour before is "+oneHourAgo);
-		System.out.println("One hour before is "+oneHourAgo.before(current_time));
+		Timestamp oneHourAgo = new Timestamp(current_time.getTime()-3600000*24);//it is 1 day now
 		for(Transaction pendingTx: allTX) {
-			if(Timestamp.valueOf(pendingTx.getTimestamp()).before(oneHourAgo)) {
-					
+			if(Timestamp.valueOf(pendingTx.getTimestamp()).before(oneHourAgo)) {		
 				Student from_student = pendingTx.getFrom_stu();
 				Student to_student = pendingTx.getTo_stu();
 				Post post = pendingTx.getPost();
 				Double amount = pendingTx.getAmount();
-				
-				System.out.println(Timestamp.valueOf(pendingTx.getTimestamp())+" is before "+oneHourAgo);		
-				
 				pendingTx.getTo_stu().addQa_coins(amount);
 				StudentDAO.updateQa_coins(pendingTx.getTo_stu());
-
 				Transaction approvedTx = new Transaction(post, from_student, to_student, amount,current_time.toString(),"approved");
 				TransactionDAO.insertTransaction(approvedTx);
 				TransactionDAO.updateTransactionType(pendingTx,"pending","closed");

@@ -160,7 +160,59 @@ public class PostDAO {
 	        }
 	        return postMap;
 	    }
-	    
+	    public ArrayList<Post> retrieveChildPost(int postID) {
+	        Connection conn = null;
+	        PreparedStatement stmt = null;
+	        String sql = "";
+	        Post childPost = null;
+	        ArrayList<Post> childrenPost = new ArrayList<Post>();
+	        ResultSet rs = null;
+
+	        try {
+	            conn = ConnectionManager.getConnection();
+
+	            sql = "select * from " + TBLNAME + " where parent_id = ? and is_question=0";
+	            stmt = conn.prepareStatement(sql);	
+	            stmt.setInt(1, postID);
+	            
+	            rs = stmt.executeQuery();
+
+	            while (rs.next()) {
+	            	int avatar_id = rs.getInt(1);
+	            	int parent_id = rs.getInt(2);
+	            	int level = rs.getInt(3);
+	            	int post_id = rs.getInt(4);
+	            	String post_title = rs.getString(5);
+	            	String post_content = rs.getString(6);
+	            	boolean is_question = rs.getBoolean(7);
+	            	boolean is_bot = rs.getBoolean(8);
+	            	boolean is_qa_bountiful = rs.getBoolean(9);
+	            	String timestamp = rs.getString(10);
+	            	int time_limit_qa = rs.getInt(11);
+	            	int time_limit_bot = rs.getInt(12);
+	            	float qa_coin_basic = rs.getFloat(13);
+	            	float qa_coin_bounty = rs.getFloat(14);
+	            	float thoughfulness_score = rs.getFloat(15);
+	            	boolean no_show = rs.getBoolean(16);
+	            	int previous_version = rs.getInt(17);
+	            	int number_of_upvotes = rs.getInt(18);
+	            	int number_of_downvotes = rs.getInt(19);
+
+	             
+	            	childPost = new Post(avatar_id, parent_id, level, post_id, post_title, post_content, is_question, is_bot, is_qa_bountiful, timestamp, time_limit_qa, time_limit_bot, qa_coin_basic, qa_coin_bounty, thoughfulness_score,
+	            		 no_show, previous_version, number_of_upvotes, number_of_downvotes);
+	            	childrenPost.add(childPost);
+	            	
+	            }
+
+
+	        } catch (SQLException ex) {
+	            handleSQLException(ex, sql, "Post={}");
+	        } finally {
+	            ConnectionManager.close(conn, stmt, rs);
+	        }
+	        return childrenPost;
+	    }
 	    // retrieve Parent post -> for viewPost.jsp	    
 	    public Post retrieveParentPost(int postID) {
 	        Connection conn = null;

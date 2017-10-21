@@ -28,8 +28,8 @@
 	<div class='container' align='center'>
 	<%
 	Student student = (Student) session.getAttribute("student");
-	TransactionController.refundAllQa_coins();
-	TransactionController.clearAllPendingTransactions();
+	//TransactionController.refundAllQa_coins();
+	//TransactionController.clearAllPendingTransactions();
 	String stu_smu_email_id = student.getSmu_email_id();
 	StudentDAO stu_dao = new StudentDAO();
 	Student updated_student = stu_dao.retrieveStudentByEmailID(stu_smu_email_id);
@@ -57,6 +57,8 @@
 					</thead>
 						<%
 						ArrayList<Transaction> transactions = TransactionDAO.retrieveTransactionByRelatedStudent(student);
+						ArrayList<Transaction> pendingTx =new ArrayList<Transaction>();
+						int i =0;
 						if(transactions!=null && transactions.size()>0){
 							for(Transaction transaction: transactions){
 								if(!transaction.getType().equals("closed")){
@@ -74,7 +76,34 @@
 						%>
 					<tbody>
 						<tr>
-							<td><%=transaction.getType() %></td>
+							<td><%
+							String type = transaction.getType();
+							String qa_coins ="";
+							if(type.equals("approved")){
+								if(student.getSmu_email_id().equals(transaction.getFrom_stu().getSmu_email_id())){
+									out.println("Approved to reward the reply ");
+									qa_coins="-"+transaction.getAmount();
+								}else{
+									out.println("Approved");
+									qa_coins="+"+transaction.getAmount();
+								}
+							}else if(type.equals("rejected")){
+								out.println("Rejected");
+								qa_coins=""+transaction.getAmount();
+							}else if(type.equals("toCentralPool")){
+								out.println("QA coins deducted for rewarding");
+								qa_coins="-"+transaction.getAmount();
+							}else if(type.equals("sysReward")){
+								out.println("System reward for thoughtfulness");
+								qa_coins="+"+transaction.getAmount();
+							}else if(type.equals("pending")){
+								out.println("Pending reward approval");
+								qa_coins=""+transaction.getAmount();
+							}else if(type.equals("closed")){
+								out.println("QA coins deducted for rewarding");
+								qa_coins=""+transaction.getAmount();
+							}
+							%></td>
 							<td><a href="viewPost.jsp?post_id=<%=parentPost.getPost_id()%>"><%=parentPost.getPost_title()%></a></td>
 							<% if (childPost!=null){ %>
 							<td><a href="viewPost.jsp?post_id=<%=childPost.getPost_id()%>"><%=childPost.getPost_content()%></a></td>
@@ -82,23 +111,27 @@
 							<td></td>
 							<%} %>
 							<td><%=transaction.getTimestamp()%></td>
-							<td><%=transaction.getAmount()%></td>
+							<td><%=qa_coins%></td>
 							<td>
 							<%
 							if(transaction.getFrom_stu()!= null){
 								if(transaction.getType().equals("pending")&&transaction.getFrom_stu().getSmu_email_id().equals(updated_student.getSmu_email_id())){ 
-									session.setAttribute("pendingTransaction", transaction);
+									pendingTx.add(transaction);
+									session.setAttribute("pendingTransaction", pendingTx);
+									
+				
 							
 							
-							
-						 // if approve or reject if pressed, parameter tx is pass to TXController 
+						 // if approve or reject is pressed, parameter tx is pass to TXController 
 							%>
 								<div class="btn-group" role="group" aria-label="Basic example">
 								<form action="myQAcoins" method="post">
-							    <button class="btn btn-secondary" type="submit" name="button" value="approved">Approve</button>
-							    <button class="btn btn-secondary" type="submit" name="button" value="rejected">Reject</button>
+								
+							    <button class="btn btn-secondary" type="submit" name="button" value=<%="approved"+i %>>Approve</button>
+							    <button class="btn btn-secondary" type="submit" name="button" value=<%="rejected"+i %>>Reject</button>
 								</form>
-							<%} }%>
+							<%i++;
+							} }%>
 								</div>
 							</td>
 						</tr>
