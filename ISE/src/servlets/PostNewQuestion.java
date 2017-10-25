@@ -48,7 +48,7 @@ public class PostNewQuestion extends HttpServlet {
 		// check error here
 		String reward_qa_coins_string = request.getParameter("reward_qa_coins");
 		double reward_qa_coins =0;
-		if(student != null && reward_qa_coins_string!=null) {
+		if(student != null && reward_qa_coins_string!=null && reward_qa_coins_string.length()>0) {
 			reward_qa_coins =Double.parseDouble(reward_qa_coins_string);
 		}
 		
@@ -104,7 +104,10 @@ public class PostNewQuestion extends HttpServlet {
 			if(student != null){
 				Post post = postDAO.retrievePostbyID(postDAO.lastPostIDofAvatar(avatar_id));
 				TransactionController.rewardThoughtfulnessQAcoins(post, student);
-				TransactionController.depositQa_coins(post, student, reward_qa_coins);
+				if(reward_qa_coins>0) {
+					TransactionController.depositQa_coins(post, student, reward_qa_coins);
+				}
+				
 				
 			}
 			

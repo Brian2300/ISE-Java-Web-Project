@@ -49,9 +49,13 @@ public class TransactionController extends HttpServlet {
 		doGet(request, response);
 	}
 	public static String rewardThoughtfulnessQAcoins(Post post, Student to_student) {
-		float thoughtfulnessScore = post.getThoughfulness_score();
+		//float thoughtfulnessScore = post.getThoughfulness_score();
 		//below formula can be changed
-		double rewardQa_coins =5.1 + thoughtfulnessScore * 1.0;
+		//double rewardQa_coins =5.1+ thoughtfulnessScore * 1.0;
+		String postContent = post.getPost_content();
+		String[] words = postContent.split("\\s+");
+		int postWordCount = words.length;
+		double rewardQa_coins = Math.round(Math.log(postWordCount) * 100.0) / 100.0;
 		
 		Timestamp time_stamp = new Timestamp(System.currentTimeMillis());
 		String timestamp =time_stamp.toString();
@@ -165,15 +169,30 @@ public class TransactionController extends HttpServlet {
 	// refundQa_coins should check all transactions and refund all of them
 	// retrieve all transactions that are not closed and refund them.
 	public static void refundAllQa_coins() {
-		// this method should also credit all QA coins to B is A didn't apporve within 24 hours
+		// if A post something with a reward 
+		//if nobody get it, then QA coins will automatically refund to A's account, others will no longer get it
 		ArrayList<Transaction> allTX = TransactionDAO.retrieveTransactionByType("toCentralPool");
 		Timestamp current_time = new Timestamp(System.currentTimeMillis());
-		Timestamp oneHourAgo = new Timestamp(current_time.getTime()-3600000*24);//it is 1 day now
+		Timestamp oneHourAgo = new Timestamp(current_time.getTime()-60000*3);//it is 3 minutes now
 		for(Transaction tx: allTX) {
 			if(Timestamp.valueOf(tx.getTimestamp()).before(oneHourAgo)) {			
 				tx.getFrom_stu().addQa_coins(tx.getAmount());
 				StudentDAO.updateQa_coins(tx.getFrom_stu());
 				TransactionDAO.updateTransactionType(tx,"toCentralPool","refunded");
+				
+				//close other pending transactions
+				
+				int post_id = tx.getPost().getPost_id();
+				PostDAO postDAO = new PostDAO();
+				ArrayList<Post> childrenPosts = postDAO.retrieveChildPost(post_id);
+				for(Post childPost:childrenPosts) {
+					ArrayList<Transaction>otherRelatedTransactions = TransactionDAO.retrieveTransactionByPostID(childPost.getPost_id());
+					for(Transaction relatedTx: otherRelatedTransactions) {
+						if (relatedTx.getType().equals("pending")){
+							TransactionDAO.updateTransactionType(relatedTx, "pending", "closed");
+						}
+					}
+				}
 			}
 		}		
 	}

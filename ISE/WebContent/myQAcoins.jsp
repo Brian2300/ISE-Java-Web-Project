@@ -28,7 +28,7 @@
 	<div class='container' align='center'>
 	<%
 	Student student = (Student) session.getAttribute("student");
-	//TransactionController.refundAllQa_coins();
+	TransactionController.refundAllQa_coins();
 	//TransactionController.clearAllPendingTransactions();
 	String stu_smu_email_id = student.getSmu_email_id();
 	StudentDAO stu_dao = new StudentDAO();
@@ -96,6 +96,9 @@
 							}else if(type.equals("sysReward")){
 								out.println("System reward for thoughtfulness");
 								qa_coins="+"+transaction.getAmount();
+							}else if(type.equals("refunded")){
+								out.println("Refund of QA coins reward");
+								qa_coins=""+transaction.getAmount();
 							}else if(type.equals("pending")){
 								out.println("Pending reward approval");
 								qa_coins=""+transaction.getAmount();

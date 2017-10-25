@@ -47,6 +47,16 @@
     	.attr("y",10)
     	.attr("font-family","dans-serif")
 	     .attr("font-size", "20px");
+  	
+   
+    
+    canvas.append("text")
+	.attr("id","title")
+	.text("Percentage: ")
+	.attr("x",10)
+	.attr("y",40)
+	.attr("font-family","dans-serif")
+    .attr("font-size", "20px");
     
     var square = canvas.selectAll("rect")
     					.data(attendanceData)
