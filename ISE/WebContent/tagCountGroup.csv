@@ -1,0 +1,21 @@
+index,tag,count
+1,countif,12
+2,index,13
+3,lookup,4
+4,match,6
+5,norm.dist,3
+6,norminv,4
+7,offset,5
+8,pivot table,6
+9,round,13
+10,slope,10
+11,small,10
+12,solver,6
+13,sqrt,2
+14,stdev,13
+15,substitute,2
+16,sumproduct,14
+17,sumsq,8
+18,time,5
+19,vlookup,6
+20,ztest,14

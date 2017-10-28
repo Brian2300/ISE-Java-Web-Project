@@ -125,7 +125,7 @@
 	var textMaker = chart2.selectAll("text")
 					.data(title)
 					.enter()
-					.append("text");
+					.ap	pend("text");
 	var textAttributes = textMaker
 							.attr("x", 50)
 							.attr("y", 60)
