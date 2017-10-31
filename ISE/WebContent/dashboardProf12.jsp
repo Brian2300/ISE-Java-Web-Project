@@ -124,8 +124,8 @@ var color = d3.scale.ordinal()
     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 var arc = d3.svg.arc()
-    .outerRadius(radius - 30)
-    .innerRadius(radius - 85);
+    .outerRadius(radius - 35)
+    .innerRadius(radius - 90);
 
 var pie = d3.layout.pie()
     .sort(null)
