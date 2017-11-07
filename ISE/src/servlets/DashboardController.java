@@ -44,8 +44,10 @@ public class DashboardController extends HttpServlet {
 			response.sendRedirect("dashboardProfessor.jsp");//make it as full path
 		}
 		
-		response.sendRedirect("myQAcoins.jsp");
+		//response.sendRedirect("myQAcoins.jsp");
 	}
+	
+	
 	
 
 	/**

@@ -15,7 +15,7 @@
 			<li class="nav-item"><a class="nav-link"
 				href="postClassSummary.jsp">Post-class Summary</a></li>
 			<li class="nav-item"><a class="nav-link" href="consultation.jsp">Consultation</a></li>
-			<li class="nav-item"><a class="nav-link" href="dashboard">Dashboard</a></li>
+			<li class="nav-item"><a class="nav-link" href="dashboard.jsp">Dashboard</a></li>
 			<li class="nav-item"><a class="nav-link" href="forumHome.jsp">Forum</a></li>
 			<li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>
 		</ul>
@@ -34,7 +34,7 @@
 	<div class="collapse navbar-collapse" id="navbarTogglerDemo01">
 		<a class="navbar-brand" href="home.jsp">IS102</a>
 		<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-			<li class="nav-item"><a class="nav-link" href="dashboard">Dashboard</a></li>
+			<li class="nav-item"><a class="nav-link" href="dashboard.jsp">Dashboard</a></li>
 			<li class="nav-item"><a class="nav-link" href="forumHome.jsp">Forum</a></li>
 			<li class="nav-item"><a class="nav-link" href="myQAcoins.jsp">QA Coins</a></li>
 			<li class="nav-item"><a class="nav-link" href="logout.jsp">Logout</a></li>

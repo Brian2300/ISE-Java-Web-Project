@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<style>
+		.x text{
+			text-anchor: end;
+			transform: rotate(-60deg);
+		}
+		.vertical{
+			text-anchor: end;
+			transform: rotate(-90deg);
+		}
+		#info{
+			left: -1000px;
+			position: absolute;
+			min-width: 100px;
+			padding: 10px;
+			background: #000;
+			color: #fff;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+		}
+	</style>
+</head>
+<body>
+<div id="info" style=""></div>
+<div style="width: 1450px; margin: 0 auto">
+	<div><svg id="dashboard1" width="700" height="600">
+		<text x="80" y="50">Tag count</text>
+	</svg>
+		<svg id="dashboard2" width="700" height="600">
+			<text x="80" y="50">Post count by group</text>
+		</svg></div>
+	<div><svg id="dashboard3" width="700" height="600">
+		<text x="80" y="50">chart 3</text>
+	</svg>
+		<svg id="dashboard4" width="700" height="600">
+			<text x="80" y="50">chart 4</text>
+		</svg></div>
+</div>
+
+
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+	let d1Data = [
+		{email_id: "aaa.2011", Group: "G1", tag: "countif", post_id: "1"},
+		{email_id: "aaa.2012", Group: "G2", tag: "countif", post_id: "2"},
+		{email_id: "aaa.2013", Group: "G1", tag: "countif", post_id: "3"},
+		{email_id: "aaa.2014", Group: "G2", tag: "countif", post_id: "4"},
+		{email_id: "aaa.2015", Group: "G1", tag: "index", post_id: "5"},
+		{email_id: "aaa.2016", Group: "G2", tag: "lookup", post_id: "6"},
+		{email_id: "aaa.2017", Group: "G1", tag: "match", post_id: "7"},
+		{email_id: "aaa.2018", Group: "G2", tag: "norm.dist", post_id: "8"},
+		{email_id: "aaa.2019", Group: "G1", tag: "norminv", post_id: "9"},
+		{email_id: "aaa.2020", Group: "G3", tag: "offset", post_id: "10"},
+		{email_id: "aaa.2021", Group: "G4", tag: "offset", post_id: "11"},
+		{email_id: "aaa.2022", Group: "G1", tag: "offset", post_id: "12"},
+		{email_id: "aaa.2023", Group: "G2", tag: "offset", post_id: "13"},
+		{email_id: "aaa.2024", Group: "G1", tag: "pivot table", post_id: "14"},
+		{email_id: "aaa.2025", Group: "G2", tag: "round", post_id: "15"},
+		{email_id: "aaa.2026", Group: "G1", tag: "slope", post_id: "16"},
+		{email_id: "aaa.2027", Group: "G2", tag: "slope", post_id: "17"},
+		{email_id: "aaa.2028", Group: "G1", tag: "slope", post_id: "18"},
+		{email_id: "aaa.2029", Group: "G2", tag: "slope", post_id: "19"},
+		{email_id: "aaa.2030", Group: "G1", tag: "slope", post_id: "20"},
+		{email_id: "aaa.2031", Group: "G3", tag: "small", post_id: "21"},
+		{email_id: "aaa.2032", Group: "G4", tag: "solver", post_id: "22"},
+		{email_id: "aaa.2033", Group: "G1", tag: "sqrt", post_id: "23"},
+		{email_id: "aaa.2034", Group: "G2", tag: "sqrt", post_id: "24"},
+		{email_id: "aaa.2035", Group: "G1", tag: "sqrt", post_id: "25"},
+		{email_id: "aaa.2036", Group: "G2", tag: "sqrt", post_id: "26"},
+		{email_id: "aaa.2037", Group: "G1", tag: "sqrt", post_id: "27"},
+		{email_id: "aaa.2038", Group: "G2", tag: "sqrt", post_id: "28"},
+		{email_id: "aaa.2039", Group: "G1", tag: "sqrt", post_id: "29"},
+		{email_id: "aaa.2041", Group: "G1", tag: "sqrt", post_id: "31"},
+		{email_id: "aaa.2042", Group: "G3", tag: "sqrt", post_id: "32"},
+		{email_id: "aaa.2043", Group: "G4", tag: "sqrt", post_id: "33"},
+		{email_id: "aaa.2044", Group: "G1", tag: "sqrt", post_id: "34"},
+		{email_id: "aaa.2045", Group: "G2", tag: "sqrt", post_id: "35"},
+		{email_id: "aaa.2046", Group: "G1", tag: "stdev", post_id: "36"},
+		{email_id: "aaa.2047", Group: "G2", tag: "substitute", post_id: "37"},
+		{email_id: "aaa.2048", Group: "G1", tag: "sumproduct", post_id: "38"},
+		{email_id: "aaa.2049", Group: "G2", tag: "sumsq", post_id: "39"},
+		{email_id: "aaa.2050", Group: "G1", tag: "sumsq", post_id: "40"},
+		{email_id: "aaa.2051", Group: "G2", tag: "sumsq", post_id: "41"},
+		{email_id: "aaa.2052", Group: "G1", tag: "sumsq", post_id: "42"},
+		{email_id: "aaa.2053", Group: "G3", tag: "sumsq", post_id: "43"},
+		{email_id: "aaa.2054", Group: "G4", tag: "time", post_id: "44"},
+		{email_id: "aaa.2055", Group: "G1", tag: "time", post_id: "45"},
+		{email_id: "aaa.2056", Group: "G2", tag: "time", post_id: "46"},
+		{email_id: "aaa.2057", Group: "G1", tag: "time", post_id: "47"},
+		{email_id: "aaa.2058", Group: "G1", tag: "time", post_id: "48"},
+		{email_id: "aaa.2059", Group: "G2", tag: "vlookup", post_id: "49"},
+		{email_id: "aaa.2060", Group: "G19", tag: "vlookup", post_id: "50"},
+		{email_id: "aaa.2061", Group: "G2", tag: "vlookup", post_id: "51"},
+		{email_id: "aaa.2062", Group: "G19", tag: "vlookup", post_id: "52"},
+		{email_id: "aaa.2063", Group: "G2", tag: "vlookup", post_id: "53"},
+		{email_id: "aaa.2064", Group: "G1", tag: "vlookup", post_id: "54"},
+		{email_id: "aaa.2065", Group: "G2", tag: "vlookup", post_id: "55"},
+		{email_id: "aaa.2066", Group: "G19", tag: "vlookup", post_id: "56"},
+		{email_id: "aaa.2067", Group: "G19", tag: "ztest", post_id: "57"}
+	];
+	let d2Data = [
+		{email_id: "aaa.2000", group: "G1", post_id: "1"},
+		{email_id: "aaa.2000", group: "G1", post_id: "2"},
+		{email_id: "aaa.2000", group: "G1", post_id: "3"},
+		{email_id: "aaa.2000", group: "G1", post_id: "4"},
+		{email_id: "aaa.2001", group: "G2", post_id: "5"},
+		{email_id: "aaa.2002", group: "G3", post_id: "6"},
+		{email_id: "aaa.2001", group: "G3", post_id: "7"},
+		{email_id: "aaa.2002", group: "G3", post_id: "8"},
+		{email_id: "aaa.2001", group: "G3", post_id: "9"},
+		{email_id: "aaa.2001", group: "G3", post_id: "10"},
+		{email_id: "aaa.2002", group: "G4", post_id: "11"},
+		{email_id: "aaa.2004", group: "G4", post_id: "12"},
+		{email_id: "aaa.2004", group: "G4", post_id: "13"},
+		{email_id: "aaa.2004", group: "G4", post_id: "14"},
+		{email_id: "aaa.2004", group: "G4", post_id: "15"},
+		{email_id: "aaa.2004", group: "G5", post_id: "16"},
+		{email_id: "aaa.2005", group: "G13", post_id: "17"},
+		{email_id: "aaa.2006", group: "G19", post_id: "18"},
+		{email_id: "aaa.2007", group: "G19", post_id: "19"}
+	];
+	let d3Data = [
+		{email_id: "adityah.2016", group: "G1", week: "1", mark: 5},
+		{email_id: "amelia.lee.2015", group: "G2", week: "1", mark: 5},
+		{email_id: "andy.aw.2014", group: "G2", week: "1", mark: 2},
+		{email_id: "annabelkhoo.2014", group: "G2", week: "1", mark: 7},
+		{email_id: "anuradham.2016", group: "G1", week: "1", mark: 2},
+		{email_id: "bhwang.2015", group: "G1", week: "1", mark: 10},
+		{email_id: "bohan.yang.2016", group: "G1", week: "1", mark: 10},
+		{email_id: "cherylchiam.2015", group: "G2", week: "1", mark: 9},
+		{email_id: "damodaranm.2015", group: "G1", week: "1", mark: 4},
+		{email_id: "daniel.chen.2013", group: "G1", week: "1", mark: 6},
+		{email_id: "geraldfoong.2013", group: "G2", week: "1", mark: 2}
+	];
+	let d4Data = [
+		{email_id: "adityah.2016", group: "G1", Qacoins: 98},
+		{email_id: "amelia.lee.2015", group: "G2", Qacoins: 47},
+		{email_id: "andy.aw.2014", group: "G2", Qacoins: 44},
+		{email_id: "annabelkhoo.2014", group: "G2", Qacoins: 50},
+		{email_id: "anuradham.2016", group: "G1", Qacoins: 21},
+		{email_id: "bhwang.2015", group: "G1", Qacoins: 178},
+		{email_id: "bohan.yang.2016", group: "G1", Qacoins: 84},
+		{email_id: "cherylchiam.2015", group: "G2", Qacoins: 85},
+		{email_id: "damodaranm.2015", group: "G1", Qacoins: 112},
+		{email_id: "daniel.chen.2013", group: "G1", Qacoins: 88},
+		{email_id: "geraldfoong.2013", group: "G2", Qacoins: 40}
+	];
+	let info = d3.select('#info');
+	let rainbow = (t)=>{
+		let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+		return color(t);
+	};
+
+	/*	control({
+		d1:'d1TagCount.csv',
+		d2:'d2groupPostCount.csv',
+		d3:'d3Marks.csv',
+		d4:'d4QAcoins.csv',
+	},true);
+*/
+	control({
+		d1:d1Data,
+		d2:d2Data,
+		d3:d3Data,
+		d4:d4Data,
+	},false);
+	
+	
+	function control(data, isCsv) {
+		if(isCsv){
+			let queue = d3.queue();
+			queue.defer(d3.csv,data.d1)//'d1TagCount.csv'
+				.defer(d3.csv,data.d2)//'d2groupPostCount.csv'
+				.defer(d3.csv,data.d3,row=>{row.mark = +row.mark; return row;})//'d3Marks.csv'
+				.defer(d3.csv,data.d4,row=>{row.Qacoins = +row.Qacoins; return row;})//'d4QAcoins.csv'
+				.await((error,d1Data, d2Data, d3Data, d4Data)=>{
+					if(error) throw new Error(error);
+					draw(d1Data, d2Data, d3Data, d4Data);
+				});
+		}else {
+			draw(data.d1, data.d2, data.d3, data.d4);
+		}
+	}
+
+function draw(d1Data, d2Data, d3Data, d4Data) {
+	let margin = {
+		left:100,
+		right:100,
+		top:100,
+		bottom:100
+	};
+
+	let svg_d1 = d3.select('#dashboard1');
+	let d1_g = svg_d1.append('g').attr('transform','translate('+margin.left+','+margin.top+')');
+	svg_d1.on('click',()=>{
+		if(svg_d1.attr('switch')==='on'){
+			svg_d1.attr('switch','false');
+			renderData1(d1Data);
+		}
+	});
+	renderData1(d1Data);
+	function renderData1(d1Data, group) {
+		let width_d1 = +svg_d1.attr('width') - margin.left - margin.right;
+		let height_d1 = +svg_d1.attr('height') - margin.top - margin.bottom;
+		d1_g.remove();
+		d1_g = svg_d1.append('g').attr('transform','translate('+margin.left+','+margin.top+')');
+		let duration=1000;
+		//stack 数据组织
+		let groups = d3.set(d1Data,d=>d.Group);
+		let d1_nest = d3.nest().key(d=>d.tag).key(d=>d.Group).entries(d1Data);
+		let data14Stack = d1_nest.map(d=>{
+			let data = d.values;
+			let obj = {};
+			obj.tag = d.key;
+			data.forEach(_d=>{
+				obj[_d.key] = _d.values.length;
+			});
+			return obj;
+		});
+
+
+		if(group){
+			//这里只需要d1Data的某一个group就可以了，其他的全部置为0
+			data14Stack.forEach(d=>{
+				groups.each(g=>{
+					if(d[g] === undefined){
+						d[g] = 0;
+					}else if(g !== group){
+						d[g] = 0;
+					}
+				});
+			});
+
+		}else {
+			//因为csv数据中，不是每个tag所对应的Group的个数都是一样的，因此，这里构造没有某个Group时，数据置为0
+			data14Stack.forEach(d=>{
+				groups.each(g=>{
+					if(d[g] === undefined){
+						d[g] = 0;
+					}
+				});
+			});
+		}
+		data14Stack = data14Stack.sort((a,b)=>{
+			let sumb=0, suma = 0;
+			groups.each(g=>{
+				suma+=a[g];
+				sumb+=b[g];
+			});
+
+			return sumb - suma;
+		});
+
+		let stack = d3.stack()
+			.keys(groups.values())
+			.order(d3.stackOrderNone)
+			.offset(d3.stackOffsetNone);
+		let data1Series = stack(data14Stack);
+		let g_v = groups.values();
+		data1Series.forEach((d,i)=>{
+			d.forEach(v=>{
+				v.group = g_v[i];
+			})
+		});
+
+		//比例尺
+		let d1_scaleX = d3.scaleBand()
+			.domain(data14Stack.map(d=>d.tag))
+			.rangeRound([0, width_d1])
+			.paddingInner(0.05)
+			.paddingOuter(0.05)
+			.align(0.5);
+
+		let d1_scaleY = d3.scaleLinear()
+			.domain([0, d3.max(data14Stack, d=>{let sum = 0;groups.each(g=>sum +=d[g]); return sum})]).nice()
+			.rangeRound([height_d1, 0]);
+		let z = d3.scaleOrdinal()
+			.domain(groups.values())
+			.range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+		d1_g.append('g').selectAll('g')
+			.data(data1Series)
+			.enter().append('g')
+			.style('fill',d=>z(d.key))
+			.on('click',d=>{
+				if(svg_d1.attr('switch')==="on"){
+					svg_d1.attr('switch','false');
+					renderData1(d1Data);
+				}else {
+					svg_d1.attr('switch','on');
+					renderData1(d1Data,d.key);
+				}
+
+				d3.event.stopPropagation();
+			})
+			.selectAll("rect")
+			.data(function(d) { return d;})
+			.enter().append("rect")
+			.attr("x", d => d1_scaleX(d.data.tag))
+			.attr("y", height_d1)
+			.attr("height",0)
+			.attr("width", d1_scaleX.bandwidth())
+			.on('mousemove',(d,i)=>{
+				let coord = d3.mouse(document.body);
+				info.style('left',(coord[0]+20)+'px')
+					.style('top',(coord[1]+20)+'px');
+				info.html(`<div>tag: ${d.data.tag}</div><div>group: ${d.group}</div>
+<div>number of post_id count: ${d.data[d.group]}</div>`);
+			})
+			.on('mouseout',()=>{info.style('left','-1000px')})
+			.transition()
+			.duration(duration)
+			.attr("y", d => d1_scaleY(d[1]))
+			.attr('height', d => d1_scaleY(d[0]) - d1_scaleY(d[1]));
+
+		// 坐标轴
+		d1_g.append("g")
+			.attr("class", "axis x")
+			.attr("transform", "translate(0," + height_d1 + ")")
+			.call(d3.axisBottom(d1_scaleX));
+		d1_g.append('g')
+			.append("text")
+			.attr("x", width_d1)
+			.attr("y", d1_scaleY(d1_scaleY.ticks()[0]))
+			.attr("fill", "#000")
+			.style('font-size',13)
+			.attr("font-weight", "bold")
+			.attr("text-anchor", "start")
+			.text("tag");
+
+		d1_g.append("g")
+			.attr("class", "axis")
+			.call(d3.axisLeft(d1_scaleY));
+		//y轴的文字垂直
+		d1_g.append('g')
+			.append("text")
+			.classed('vertical',true)
+			.attr("x", 2)
+			.attr("y", d1_scaleY(d1_scaleY.ticks().pop()) - 30)
+			.attr("fill", "#000")
+			.style('font-size',13)
+			.attr("font-weight", "bold")
+			.text("count by number of post_id");
+	}
+
+
+	let svg_d2 = d3.select('#dashboard2');
+	let d2_g = svg_d2.append('g').attr('transform','translate('+margin.left+','+margin.top+')');
+
+	svg_d2.on('click',()=>{
+		if(svg_d2.attr('switch')==='on'){
+			svg_d2.attr('switch','false');
+			renderData2(d2Data);
+		}
+	});
+	renderData2(d2Data);
+	function renderData2(d2Data, group) {
+		//let rainbow = d3.interpolateRainbow;
+		let width_d2 = +svg_d2.attr('width') - margin.left - margin.right;
+		let height_d2 = +svg_d2.attr('height') - margin.top - margin.bottom;
+		d2_g.remove();
+		d2_g = svg_d2.append('g').attr('transform','translate('+margin.left+','+margin.top+')');
+		let duration=1000;
+		let radius = 200;
+		//stack 数据组织
+		let d2_nest = d3.nest().key(d=>d.group).entries(d2Data);
+		let data24Arc;
+		if(group){
+			let data = d2_nest.find(d=>d.key === group).values;
+			let _nest = d3.nest().key(d=>d.email_id).entries(data);
+			data24Arc = _nest.map(d=>({tag:d.key, val:d.values.length}));
+
+		}else {
+			data24Arc = d2_nest.map(d=>({tag:d.key, val:d.values.length}));
+		}
+		data24Arc = data24Arc.sort((a,b)=>b.val - a.val);
+
+		let data2Pie = d3.pie().sort(null)
+			.value(function(d) { return d.val; });
+		let data2arc = d3.arc()
+			.outerRadius(radius - 10)
+			.innerRadius(radius - 100);
+		let labelArc = d3.arc()
+			.outerRadius(radius - 55)
+			.innerRadius(radius - 55);
+		let arcs = data2Pie(data24Arc);
+
+		let arcs_d2 = d2_g.append('g')
+			.attr('transform','translate('+width_d2/2+','+height_d2/2+')')
+			.selectAll('.arc').data(arcs);
+		arcs_d2.enter().append('path')
+			.classed('arc',true)
+			.merge(arcs_d2)
+			//.attr('d',d=>data2arc(d))
+			.on('click',d=>{
+				if(svg_d2.attr('switch') === 'on'){
+					svg_d2.attr('switch','false');
+					renderData2(d2Data);
+				}else {
+					svg_d2.attr('switch','on');
+					renderData2(d2Data, d.data.tag);
+				}
+				d3.event.stopPropagation();
+			})
+			.on('mousemove',d=>{
+				let coord = d3.mouse(document.body);
+				info.style('left',(coord[0]+20)+'px')
+					.style('top',(coord[1]+20)+'px');
+				if(svg_d2.attr('switch') === 'on'){
+					info.html(`<div>email_id: ${d.data.tag}</div><div>number of post: ${d.value}</div>`);
+				}else {
+					info.html(`<div>number of post: ${d.value}</div><div>percentage: ${(d.value/d2Data.length*100).toFixed(2) +"%"}</div>`);
+				}
+			})
+			.on('mouseout',()=>{info.style('left','-1000px')})
+			.style("fill",(d,i)=>rainbow(i/data24Arc.length))
+			.transition().duration(duration)
+			.attrTween('d',d=>{
+				let start = {innerRadius:0,outerRadius:0,startAngle:0, endAngle:0};
+				let interpolate = d3.interpolate(start, d);
+				return function (t) {
+					return data2arc(interpolate(t));
+				};
+			});
+
+		let labels_d2 = d2_g.append('g')
+			.attr('transform','translate('+width_d2/2+','+height_d2/2+')')
+			.selectAll('.label').data(arcs);
+		labels_d2.enter().append('text')
+			.classed('label',true)
+			.merge(labels_d2)
+			.text(d=>d.data.tag)
+			.style('text-anchor','middle')
+			.style("opacity",0)
+			.transition().duration(duration)
+			.attrTween('x',d=>{
+				let start = {innerRadius:0,outerRadius:0,startAngle:0, endAngle:0};
+				let interpolate = d3.interpolate(start, d);
+				return (t)=>labelArc.centroid(interpolate(t))[0];
+			})
+			.attrTween('y',d=>{
+				let start = {innerRadius:0,outerRadius:0,startAngle:0, endAngle:0};
+				let interpolate = d3.interpolate(start, d);
+				return (t)=>labelArc.centroid(interpolate(t))[1];
+				//labelArc.centroid(d)[1]
+			})
+			.style('opacity',1);
+	}
+
+	let svg_d3 = d3.select('#dashboard3');
+	svg_d3.on('click',()=>{
+		if(svg_d3.attr('switch')==='on'){
+			svg_d3.attr('switch','false');
+			renderData3(d3Data);
+		}
+	});
+	renderData3(d3Data);
+	function renderData3(data, week, group) {
+		//let rainbow = d3.interpolateRainbow;
+		let width = +svg_d3.attr('width') - margin.left - margin.right;
+		let height = +svg_d3.attr('height') - margin.top - margin.bottom;
+		let g_top = svg_d3.select('#g_top');
+		g_top.empty()?"":g_top.remove();
+		g_top = svg_d3.append('g').attr('id','g_top').attr('transform','translate('+margin.left+','+margin.top+')');
+		let duration=1000;
+		//stack 数据组织
+		let d_nest = d3.nest().key(d=>d.week).key(d=>d.group).entries(data);
+		let d_rect;//要构造出通用的数据
+		if(group){
+			let _ = d_nest.find(d=>d.key === week).values.find(d=>d.key === group);
+			d_rect = _.values.map(d=>{
+				let obj = {};
+				obj.week = d.email_id;
+				obj.val = [{week:d.email_id,group:d.group, val: d.mark}];
+				return obj;
+			});
+			d_rect.sort((a,b)=>{
+				return b.val[0].val - a.val[0].val;
+			});
+		}else {
+			d_rect = d_nest.map(d=>{
+				let obj = {};
+				obj.week = d.key;
+				obj.val = d.values.map(v=>{
+					let o = {};
+					o.week = d.key;
+					o.group = v.key;
+					o.val = d3.mean(v.values, m=>m.mark);
+					return o;
+				});
+				return obj;
+			});
+			/*d_rect.forEach(r=>{
+				r.val = r.val.sort((a,b)=>b.val - a.val);
+			});*/
+		}
+
+
+		let keys=[];
+		d_rect.forEach(d=>{
+			d.val.forEach(v=>{
+				keys.push(v.group);
+			})
+		});
+
+		let scale_x = d3.scaleBand()
+			.domain(d_rect.map(d=>d.week)).rangeRound([0, width])
+			.paddingInner(0.05)
+			.paddingOuter(0.05)
+			.align(0.5);
+		let scale_y = d3.scaleLinear()
+			.domain([0,d3.max(d_rect.map(d=>d3.max(d.val,v=>v.val)))])
+			.range([height,100]);
+
+		g_top.selectAll('g')
+			.data(d_rect)
+			.enter().append('g')
+			.selectAll('rect')
+			.data(d=>d.val)
+			.enter().append('rect')
+			.on('click',d=>{
+
+				if(svg_d3.attr('switch') === 'on'){
+					svg_d3.attr('switch','false');
+					renderData3(data);
+				}else {
+					svg_d3.attr('switch','on');
+					renderData3(data, d.week, d.group);
+				}
+				d3.event.stopPropagation();
+			})
+			.on('mousemove',d=>{
+
+				let coord = d3.mouse(document.body);
+				info.style('left',(coord[0]+20)+'px')
+					.style('top',(coord[1]+20)+'px');
+				if(svg_d3.attr('switch') === 'on'){
+					info.html(`<div>email id: ${d.week}</div><div>mark: ${d.val}</div>`);
+				}else {
+					info.html(`<div>average mark: ${d.val.toFixed(2)}</div><div>group: ${d.group}</div>`);
+				}
+			})
+			.on('mouseout',()=>{info.style('left','-1000px')})
+			.style('fill',(d,i,arr)=>rainbow(i/arr.length))
+			.attr('width', (d,i,arr)=>scale_x.bandwidth()/arr.length)
+			.attr('x',(d,i,arr)=>scale_x(d.week)+ scale_x.bandwidth()/arr.length*i)
+			.attr('y',height)
+			.attr('height',0)
+			.transition().duration(duration)
+			.attr('y',d=>scale_y(d.val))
+			.attr('height',d=>height - scale_y(d.val));
+
+		// 坐标轴
+		g_top.append("g")
+			.attr("class", ()=>{
+				if(svg_d3.attr('switch') === 'on' && d_rect.map(d=>d.week).length>4){
+					return "axis x";
+				}else {
+					return "axis";
+				}
+			})
+			.attr("transform", "translate(0," + height + ")")
+			.call(d3.axisBottom(scale_x));
+		g_top.append('g')
+			.append("text")
+			.attr("x", width)
+			.attr("y", scale_y(scale_y.ticks()[0]))
+			.attr("fill", "#000")
+			.style('font-size',13)
+			.attr("font-weight", "bold")
+			.attr("text-anchor", "start")
+			.text(()=>{
+				if(svg_d3.attr('switch') === 'on'){
+					return "email id";
+				}else {
+					return "week";
+				}
+
+			});
+
+		g_top.append("g")
+			.attr("class", "axis")
+			.call(d3.axisLeft(scale_y));
+		//y轴的文字垂直
+		g_top.append('g')
+			.append("text")
+			.classed('vertical',true)
+			.attr("x", -100)
+			.attr("y", - 30)
+			.attr("fill", "#000")
+			.style('font-size',13)
+			.attr("font-weight", "bold")
+			.text(()=>{
+				if(svg_d3.attr('switch') === 'on'){
+					return "mark";
+				}else {
+					return "average mark";
+				}
+
+			});
+	}
+
+
+	d4Data = d4Data.map(d=>({
+		email_id: d.email_id,
+		group: d.group,
+		week: d.group,
+		mark:d.Qacoins
+	}));
+	let svg_d4 = d3.select('#dashboard4');
+	svg_d4.on('click',()=>{
+		if(svg_d4.attr('switch')==='on'){
+			svg_d4.attr('switch','false');
+			renderData4(d4Data);
+		}
+	});
+	renderData4(d4Data);
+
+	function renderData4(data, week, group) {
+		//let rainbow = d3.interpolateRainbow;
+		let width = +svg_d4.attr('width') - margin.left - margin.right;
+		let height = +svg_d4.attr('height') - margin.top - margin.bottom;
+		let g_top = svg_d4.select('#g_top');
+		g_top.empty()?"":g_top.remove();
+		g_top = svg_d4.append('g').attr('id','g_top').attr('transform','translate('+margin.left+','+margin.top+')');
+		let duration=1000;
+		//stack 数据组织
+		let d_nest = d3.nest().key(d=>d.week).key(d=>d.group).entries(data);
+		let d_rect;//要构造出通用的数据
+		if(group){
+			let _ = d_nest.find(d=>d.key === week).values.find(d=>d.key === group);
+
+			d_rect = _.values.map(d=>{
+				let obj = {};
+				obj.week = d.email_id;
+				obj.val = [{week:d.email_id,group:d.group, val: d.mark}];
+				return obj;
+			});
+		}else {
+			d_rect = d_nest.map(d=>{
+				let obj = {};
+				obj.week = d.key;
+				obj.val = d.values.map(v=>{
+					let o = {};
+					o.week = d.key;
+					o.group = v.key;
+					o.val = d3.mean(v.values, m=>m.mark);
+					return o;
+				});
+				return obj;
+			});
+		}
+		d_rect.sort((a,b)=>{
+			return b.val[0].val - a.val[0].val;
+		});
+
+
+		let keys=[];
+		d_rect.forEach(d=>{
+			d.val.forEach(v=>{
+				keys.push(v.group);
+			})
+		});
+
+		let scale_x = d3.scaleBand()
+			.domain(d_rect.map(d=>d.week)).rangeRound([0, width])
+			.paddingInner(0.05)
+			.paddingOuter(0.05)
+			.align(0.5);
+		let scale_y = d3.scaleLinear()
+			.domain([0,d3.max(d_rect.map(d=>d3.max(d.val,v=>v.val)))])
+			.range([height,100]);
+
+		g_top.selectAll('g')
+			.data(d_rect)
+			.enter().append('g')
+			.style('fill',(d,i,arr)=>rainbow(i/arr.length))
+			.selectAll('rect')
+			.data(d=>d.val)
+			.enter().append('rect')
+			.on('click',d=>{
+
+				if(svg_d3.attr('switch') === 'on'){
+					svg_d3.attr('switch','false');
+					renderData4(data);
+				}else {
+					svg_d3.attr('switch','on');
+					renderData4(data, d.week, d.group);
+				}
+				d3.event.stopPropagation();
+			})
+			.on('mousemove',d=>{
+				let coord = d3.mouse(document.body);
+				info.style('left',(coord[0]+20)+'px')
+					.style('top',(coord[1]+20)+'px');
+				if(svg_d3.attr('switch') === 'on'){
+					info.html(`<div>email id: ${d.week}</div><div>QA coins: ${d.val.toFixed(2)}</div>`);
+				}else {
+					info.html(`<div>average QA coins: ${d.val.toFixed(2)}</div><div>group: ${d.group}</div>`);
+				}
+			})
+			.on('mouseout',()=>{info.style('left','-1000px')})
+
+			.attr('width', (d,i,arr)=>scale_x.bandwidth()/arr.length)
+			.attr('x',(d,i,arr)=>scale_x(d.week)+ scale_x.bandwidth()/arr.length*i)
+			.attr('y',height)
+			.attr('height',0)
+			.transition().duration(duration)
+			.attr('y',d=>scale_y(d.val))
+			.attr('height',d=>height - scale_y(d.val));
+
+		// 坐标轴
+		g_top.append("g")
+			.attr("class", ()=>{
+				if(svg_d3.attr('switch') === 'on' && d_rect.map(d=>d.week).length>4){
+					return "axis x";
+				}else {
+					return "axis";
+				}
+			})
+			.attr("transform", "translate(0," + height + ")")
+			.call(d3.axisBottom(scale_x));
+		g_top.append('g')
+			.append("text")
+			.attr("x", width)
+			.attr("y", scale_y(scale_y.ticks()[0]))
+			.attr("fill", "#000")
+			.style('font-size',13)
+			.attr("font-weight", "bold")
+			.attr("text-anchor", "start")
+			.text(()=>{
+				if(svg_d3.attr('switch') === 'on'){
+					return "email id";
+				}else {
+					return "group";
+				}
+
+			});
+
+		g_top.append("g")
+			.attr("class", "axis")
+			.call(d3.axisLeft(scale_y));
+		//y轴的文字垂直
+		g_top.append('g')
+			.append("text")
+			.classed('vertical',true)
+			.attr("x", -100)
+			.attr("y", - 30)
+			.attr("fill", "#000")
+			.style('font-size',13)
+			.attr("font-weight", "bold")
+			.text(()=>{
+				if(svg_d3.attr('switch') === 'on'){
+					return "QAcoins";
+				}else {
+					return "average QA coins";
+				}
+			});
+	}
+}
+</script>
+</body>
+</html>
