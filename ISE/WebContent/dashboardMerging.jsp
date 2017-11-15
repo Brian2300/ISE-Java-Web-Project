@@ -1,4 +1,4 @@
-<%@include file="protect.jsp"%>
+
 <%@ page language="java"
 	import="javazoom.upload.*,java.util.*,java.io.*,utility.BootstrapUpload,entity.*,servlets.DashboardController, dao.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -44,16 +44,21 @@
 		<svg id="dashboard2" width="700" height="600">
 			<text x="80" y="60" font-size ="25px">Post Distribution</text>
 		</svg></div>
-	<div><svg id="dashboard3" width="700" height="600">
+	<div>
+	<svg id="dashboard4" width="700" height="600">
+			<text x="80" y="130" font-size ="25px">QA coins Distribution</text>
+		</svg>
+	<svg id="dashboard3" width="700" height="600">
 		<text x="80" y="130" font-size ="25px">Mark Distribution</text>
 	</svg>
-		<svg id="dashboard4" width="700" height="600">
-			<text x="80" y="130" font-size ="25px">QA coins Distribution</text>
-		</svg></div>
+		
+	</div>
+
 </div>
 
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
+
 <script>
 	var d1Data = <%=DashboardDAO.retrieveD1data()%>
 	var d2Data = <%=DashboardDAO.retrieveD2data()%>
@@ -64,7 +69,15 @@
 	
 	let info = d3.select('#info');
 	let rainbow = (t)=>{
-		let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range([ "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+		//还行
+		let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#c7001e", "#f6a580", "#959797", "#067CC2", "#086fad"]);
+		//
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#ff8c00","#d0743c","#a05d56", "#6b486b","#7b6888", "#f1a340","#998ec3"]);		
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#9933ff","#cc33ff", "#9966ff","#9999ff","#99ccff","#66ccff"]);		
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#ff5733", "#ffbd33","#dbff33","#75ff33","#33ff57","#33ffbd"]);		
+
+		
 		return color(t);
 	};
 //below is to select data loading source
@@ -193,7 +206,9 @@ function draw(d1Data, d2Data, d3Data, d4Data) {
 			.rangeRound([height_d1, 0]);
 		let z = d3.scaleOrdinal()
 			.domain(groups.values())
-			.range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+			
+			.range(["#900C3F","#998ec3", "#f1a340","#7b6888","#067CC2", "#a05d56", "#d0743c", "#ff8c00","#900C3F"]);
+			//.range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 		d1_g.append('g').selectAll('g')
 			.data(data1Series)
@@ -359,7 +374,7 @@ function draw(d1Data, d2Data, d3Data, d4Data) {
 			})
 			.style('opacity',1);
 	}
-
+	//chart 3
 	let svg_d3 = d3.select('#dashboard3');
 	svg_d3.on('click',()=>{
 		if(svg_d3.attr('switch')==='on'){
@@ -367,6 +382,8 @@ function draw(d1Data, d2Data, d3Data, d4Data) {
 			renderData3(d3Data);
 		}
 	});
+	
+	
 	renderData3(d3Data);
 	function renderData3(data, week, group) {
 		//let rainbow = d3.interpolateRainbow;
@@ -512,68 +529,32 @@ function draw(d1Data, d2Data, d3Data, d4Data) {
 			});
 	}
 
-
-	d4Data = d4Data.map(d=>({
-		email_id: d.email_id,
-		group: d.group,
-		week: d.group,
-		mark:d.Qacoins
-	}));
+//end of chart 3
+//chart 4
+	
 	let svg_d4 = d3.select('#dashboard4');
-	svg_d4.on('click',()=>{
-		if(svg_d4.attr('switch')==='on'){
-			svg_d4.attr('switch','false');
-			renderData4(d4Data);
-		}
-	});
+	var d4Data = <%=DashboardDAO.retrieveD4data()%>
 	renderData4(d4Data);
 
 	function renderData4(data, week, group) {
 		//let rainbow = d3.interpolateRainbow;
-		let width = +svg_d4.attr('width') - margin.left - margin.right;
+		/*let width = +svg_d4.attr('width') - margin.left - margin.right;
 		let height = +svg_d4.attr('height') - margin.top - margin.bottom;
 		let g_top = svg_d4.select('#g_top');
 		g_top.empty()?"":g_top.remove();
 		g_top = svg_d4.append('g').attr('id','g_top').attr('transform','translate('+margin.left+','+margin.top+')');
 		let duration=1000;
+*/
+		let info = d3.select('#info');
+		
+		let margin = {top: 50, right: 20, bottom: 70, left: 40},
+		    width = 600 - margin.left - margin.right,
+		    height = 360 - margin.top - margin.bottom;
+		console.log(margin);
 
-		let d_nest = d3.nest().key(d=>d.week).key(d=>d.group).entries(data);
-		let d_rect;
-		if(group){
-			let _ = d_nest.find(d=>d.key === week).values.find(d=>d.key === group);
+		//var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
 
-			d_rect = _.values.map(d=>{
-				let obj = {};
-				obj.week = d.email_id;
-				obj.val = [{week:d.email_id,group:d.group, val: d.mark}];
-				return obj;
-			});
-		}else {
-			d_rect = d_nest.map(d=>{
-				let obj = {};
-				obj.week = d.key;
-				obj.val = d.values.map(v=>{
-					let o = {};
-					o.week = d.key;
-					o.group = v.key;
-					o.val = d3.mean(v.values, m=>m.mark);
-					return o;
-				});
-				return obj;
-			});
-		}
-		d_rect.sort((a,b)=>{
-			return b.val[0].val - a.val[0].val;
-		});
-
-
-		let keys=[];
-		d_rect.forEach(d=>{
-			d.val.forEach(v=>{
-				keys.push(v.group);
-			})
-		});
-
+		//var y = d3.scale.linear().range([height-30, 0]);
 		let scale_x = d3.scaleBand()
 			.domain(d_rect.map(d=>d.week)).rangeRound([0, width])
 			.paddingInner(0.05)
@@ -583,93 +564,103 @@ function draw(d1Data, d2Data, d3Data, d4Data) {
 			.domain([0,d3.max(d_rect.map(d=>d3.max(d.val,v=>v.val)))])
 			.range([height,100]);
 
-		g_top.selectAll('g')
-			.data(d_rect)
-			.enter().append('g')
-			.style('fill',(d,i,arr)=>rainbow(i/arr.length))
-			.selectAll('rect')
-			.data(d=>d.val)
-			.enter().append('rect')
-			.on('click',d=>{
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
 
-				if(svg_d3.attr('switch') === 'on'){
-					svg_d3.attr('switch','false');
-					renderData4(data);
-				}else {
-					svg_d3.attr('switch','on');
-					renderData4(data, d.week, d.group);
-				}
-				d3.event.stopPropagation();
-			})
-			.on('mousemove',d=>{
-				let coord = d3.mouse(document.body);
-				info.style('left',(coord[0]+20)+'px')
-					.style('top',(coord[1]+20)+'px');
-				if(svg_d3.attr('switch') === 'on'){
-					info.html('<div>email id: '+d.week+'</div><div>QA coins: '+d.val.toFixed(2)+'</div>');
-				}else {
-					info.html('<div>average QA coins: '+d.val.toFixed(2)+'</div><div>group: '+d.group+'</div>');
-				}
-			})
-			.on('mouseout',()=>{info.style('left','-1000px')})
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left")
+		    .ticks(10);
 
-			.attr('width', (d,i,arr)=>scale_x.bandwidth()/arr.length)
-			.attr('x',(d,i,arr)=>scale_x(d.week)+ scale_x.bandwidth()/arr.length*i)
-			.attr('y',height)
-			.attr('height',0)
-			.transition().duration(duration)
-			.attr('y',d=>scale_y(d.val))
-			.attr('height',d=>height - scale_y(d.val));
+		var svg_d4 = d3.select("body").append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", 
+		          "translate(" + margin.left + "," + margin.top + ")");
+		var title = svg_d4.append("text")
+		.text("QA coins distribution")
+		.attr("x", 20)
+		.attr("y", -20);
 
-		g_top.append("g")
-			.attr("class", ()=>{
-				if(svg_d3.attr('switch') === 'on' && d_rect.map(d=>d.week).length>4){
-					return "axis x";
-				}else {
-					return "axis";
-				}
-			})
-			.attr("transform", "translate(0," + height + ")")
-			.call(d3.axisBottom(scale_x));
-		g_top.append('g')
-			.append("text")
-			.attr("x", width)
-			.attr("y", scale_y(scale_y.ticks()[0]))
-			.attr("fill", "#000")
-			.style('font-size',13)
-			.attr("font-weight", "bold")
-			.attr("text-anchor", "start")
-			.text(()=>{
-				if(svg_d3.attr('switch') === 'on'){
-					return "email id";
-				}else {
-					return "group";
-				}
+		
+		/*
+		console.log(data);
+		let max = d3.nest()
+		.rollup(function(v){return{
+			max: d3.max(v,function(d){return d.Qacoins;})};
+		})
+		console.log(max);
+		*/
+		  x.domain(data.map(function(d) { return d.group; }));
+		  var maxQa = d3.max(d3.values(data.Qacoins));
+		 // console.log(d3.max(data, function(d) { return d.Qacoins; }));
+		  
+		 // y.domain([0, d3.max(data, function(d) { return d.Qacoins; })]);
+		 y.domain([0, 280]);//static
 
-			});
+		 svg_d4.append("g")
+		      .attr("class", "x axis")
+		      .attr("transform", "translate(0," + height + ")")
+		      .call(xAxis)
+		    .selectAll("text")
+		      .style("text-anchor", "end")
+		      .attr("dx", "-.8em")
+		      .attr("dy", "-.55em")
+		      .attr("transform", "rotate(-90)" );
 
-		g_top.append("g")
-			.attr("class", "axis")
-			.call(d3.axisLeft(scale_y));
-		g_top.append('g')
-			.append("text")
-			.classed('vertical',true)
-			.attr("x", -100)
-			.attr("y", - 30)
-			.attr("fill", "#000")
-			.style('font-size',13)
-			.attr("font-weight", "bold")
-			.text(()=>{
-				if(svg_d3.attr('switch') === 'on'){
-					return "QAcoins";
-				}else {
-					return "average QA coins";
-				}
-			});
+		 svg_d4.append("g")
+		      .attr("class", "y axis")
+		      .call(yAxis)
+		    .append("text")
+		      .attr("transform", "rotate(-90)")
+		      .attr("y", 6)
+		      .attr("dy", ".71em")
+		      .style("text-anchor", "end")
+		      .text("QA coins");
+
+		 var circle= svg_d4.selectAll("circle")
+					      .data(data)
+					      .enter().append("circle")
+					      .style("border", "5px solid #666666")
+					      .style("opacity", .4)
+					      .style("border-radius","50%")
+					      .attr("r",  x.rangeBand()/7)
+					      .attr("cx", function(d) { return x(d.group)+ x.rangeBand()/2; })
+					      .attr("cy",height/2 );
+					      	
+			d3.selectAll("circle")
+			  .transition()
+			  .duration(function(d){return Math.abs(height/2-d.Qacoins)*7 })
+			  .attr("cy", function(d) { return y(d.Qacoins); });
+			
+			circle.on("mouseover", handleMouseOver)
+				  .on("mouseout", handleMouseOut);
+
+			 function handleMouseOver(d, i) {  // Add interactivity
+				 d3.select(this).attr({
+		        	"stroke":"black",
+		        	"r":  x.rangeBand()/7-3
+		         });
+				 console.log(d);
+			     console.log(i);
+						let coord = d3.mouse(document.body);
+						info.style('left',(coord[0]+20)+'px')
+							.style('top',(coord[1]+20)+'px');
+							info.html('<div>Email id: '+d.email_id+'</div><div>Group: '+d.group+'</div><div>QA coins: '+d.Qacoins+'</div>');	
+		     }
+		    function handleMouseOut(d, i) {
+		    	d3.select(this).attr({
+		        	"stroke":""
+		         });
+		    	info.style('left','-1000px')
+		     }
+
+		
 	}
 }
 </script>
-
 
 
 

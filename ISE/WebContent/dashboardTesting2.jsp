@@ -1,4 +1,4 @@
-<%@include file="protect.jsp"%>
+
 <%@ page language="java"
 	import="javazoom.upload.*,java.util.*,java.io.*,utility.BootstrapUpload,entity.*,servlets.DashboardController, dao.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -64,25 +64,34 @@
 	
 	let info = d3.select('#info');
 	let rainbow = (t)=>{
-		let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range([ "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+		//还行
+		let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#c7001e", "#f6a580", "#959797", "#067CC2", "#086fad"]);
+		//
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#ff8c00","#d0743c","#a05d56", "#6b486b","#7b6888", "#f1a340","#998ec3"]);		
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#9933ff","#cc33ff", "#9966ff","#9999ff","#99ccff","#66ccff"]);		
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#ff5733", "#ffbd33","#dbff33","#75ff33","#33ff57","#33ffbd"]);		
+
+		
 		return color(t);
 	};
 //below is to select data loading source
-/*	
+	
 	control({
 		d1:'d1TagCount.csv',
 		d2:'d2groupPostCount.csv',
 		d3:'d3Marks.csv',
 		d4:'d4QAcoins.csv',
 	},true);
-*/
+
+/*
 	control({
 		d1:d1Data,
 		d2:d2Data,
 		d3:d3Data,
 		d4:d4Data,
 	},false);
-
+*/
 	function control(data, isCsv) {
 		if(isCsv){
 			let queue = d3.queue();
@@ -193,7 +202,9 @@ function draw(d1Data, d2Data, d3Data, d4Data) {
 			.rangeRound([height_d1, 0]);
 		let z = d3.scaleOrdinal()
 			.domain(groups.values())
-			.range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+			
+			.range(["#900C3F","#998ec3", "#f1a340","#7b6888","#067CC2", "#a05d56", "#d0743c", "#ff8c00","#900C3F"]);
+			//.range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 		d1_g.append('g').selectAll('g')
 			.data(data1Series)

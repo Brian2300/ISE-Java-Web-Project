@@ -1,4 +1,4 @@
-<%@include file="protect.jsp"%>
+
 <%@ page language="java"
 	import="javazoom.upload.*,java.util.*,java.io.*,utility.BootstrapUpload,entity.*,servlets.DashboardController, dao.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -54,6 +54,7 @@
 
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
 <script>
 	var d1Data = <%=DashboardDAO.retrieveD1data()%>
 	var d2Data = <%=DashboardDAO.retrieveD2data()%>
@@ -62,10 +63,37 @@
 	
 	
 	
+	var categorical = [
+		  { "name" : "schemeAccent", "n": 8},
+		  { "name" : "schemeDark2", "n": 8},
+		  { "name" : "schemePastel2", "n": 8},
+		  { "name" : "schemeSet2", "n": 8},
+		  { "name" : "schemeSet1", "n": 9},
+		  { "name" : "schemePastel1", "n": 9},
+		  { "name" : "schemeCategory10", "n" : 10},
+		  { "name" : "schemeSet3", "n" : 12 },
+		  { "name" : "schemePaired", "n": 12},
+		  { "name" : "schemeCategory20", "n" : 20 },
+		  { "name" : "schemeCategory20b", "n" : 20},
+		  { "name" : "schemeCategory20c", "n" : 20 }
+		]
+	var colorScale = d3.scaleOrdinal(d3[categorical[0].name])
+	
+	var sequentialButtons = d3.select(".categoricalButtons")
+    .selectAll("button")
+    .data(categorical)
+    .enter().append("button")
+    .text(function(d) { return d.name; })
+    .on("click", function(buttonValue) {
+
+     var colorScale = d3.scaleOrdinal(d3[buttonValue.name]);
+    }
 	let info = d3.select('#info');
 	let rainbow = (t)=>{
-		let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-		return color(t);
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#c7001e", "#f6a580", "#cccccc", "#92c6db", "#086fad"]);
+		//let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#ff8c00","#d0743c","#a05d56", "#6b486b","#7b6888", "#f1a340","#998ec3"]);		
+		let color = d3.scaleLinear().domain([0.1,0.2,0.5,0.6,0.7,0.8,1]).range(["#9933ff","#cc33ff", "#9966ff","#9999ff","#99ccff","#66ccff"]);		
+		return colorScale(t);
 	};
 //below is to select data loading source
 /*	
@@ -180,7 +208,6 @@ function draw(d1Data, d2Data, d3Data, d4Data) {
 			})
 		});
 
-
 		let d1_scaleX = d3.scaleBand()
 			.domain(data14Stack.map(d=>d.tag))
 			.rangeRound([0, width_d1])
@@ -193,7 +220,8 @@ function draw(d1Data, d2Data, d3Data, d4Data) {
 			.rangeRound([height_d1, 0]);
 		let z = d3.scaleOrdinal()
 			.domain(groups.values())
-			.range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+			.range(["#c7001e", "#f6a580", "#cccccc", "#92c6db", "#086fad"]);
+			//.range(["#998ec3", "#f1a340","#7b6888","#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 		d1_g.append('g').selectAll('g')
 			.data(data1Series)
@@ -529,6 +557,10 @@ function draw(d1Data, d2Data, d3Data, d4Data) {
 	renderData4(d4Data);
 
 	function renderData4(data, week, group) {
+		console.log(data);
+	
+		
+		
 		//let rainbow = d3.interpolateRainbow;
 		let width = +svg_d4.attr('width') - margin.left - margin.right;
 		let height = +svg_d4.attr('height') - margin.top - margin.bottom;
